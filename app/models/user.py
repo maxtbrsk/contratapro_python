@@ -72,7 +72,7 @@ def home_top_eight():
     query = """SELECT 
                     u.id AS prestador_id,
                     u.nome_completo,
-                COALESCE(AVG(a.nota), 0) AS media_avaliacao
+                    ROUND(COALESCE(AVG(a.nota), 0), 1) AS media_avaliacao
                 FROM 
                     usuarios u
                 LEFT JOIN 
@@ -121,7 +121,19 @@ def get_categoria_users(id):
     users = []
 
     for user_id in users_id:
-        query = """SELECT * FROM usuarios WHERE id = %s;"""
+        query = """
+            SELECT 
+            u.*, 
+            ROUND(COALESCE(AVG(a.nota), 0), 1) AS media_avaliacao
+            FROM 
+            usuarios u
+            LEFT JOIN 
+            avaliacoes a ON u.id = a.prestador_id
+            WHERE 
+            u.id = %s
+            GROUP BY 
+            u.id;
+        """
         db.execute(query,(user_id["prestador_id"],))
         user = db.cursor.fetchone()
         query = """
@@ -142,3 +154,43 @@ def get_categoria_users(id):
     
     print(users)
     return users
+        
+def search_users(term):
+        db = Database()
+        term = f"%{term}%"
+        query = """
+            SELECT DISTINCT u.id, u.nome_completo, u.area_atuacao, u.descricao,
+            ROUND(COALESCE(AVG(a.nota), 0), 1) AS media_avaliacao
+            FROM usuarios u
+            LEFT JOIN prestador_categorias pc ON u.id = pc.prestador_id
+            LEFT JOIN categorias c ON pc.categoria_id = c.id
+            LEFT JOIN avaliacoes a ON u.id = a.prestador_id
+            WHERE u.nome_completo LIKE %s
+            OR u.area_atuacao LIKE %s
+            OR u.descricao LIKE %s
+            OR c.nome LIKE %s
+            GROUP BY u.id, u.nome_completo, u.area_atuacao, u.descricao
+            ORDER BY media_avaliacao DESC
+            LIMIT 20
+            """
+        db.execute(query, (term, term, term, term))
+        users = db.cursor.fetchall()
+            
+        for user in users:
+            query = """
+                SELECT 
+                c.nome AS categoria_nome,
+                pc.categoria_id AS categoria_id
+                FROM 
+                prestador_categorias pc
+                JOIN 
+                categorias c ON pc.categoria_id = c.id
+                WHERE 
+                pc.prestador_id = %s;
+                """
+            db.execute(query, (user["id"],))
+            categorias = db.cursor.fetchall()
+            user["categorias"] = categorias
+            
+        db.close()
+        return users

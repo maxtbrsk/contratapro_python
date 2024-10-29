@@ -22,5 +22,12 @@ def verify_categoria(id):
     if categoria_id:
         return True
     return False
+
+def get_categoria_by_id(id):
+    db = Database()
+    query = "SELECT nome, foto FROM categorias WHERE id = %s"
+    db.execute(query, (id,))
+    categoria = db.cursor.fetchone()
+    return categoria
     
     

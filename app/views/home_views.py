@@ -3,8 +3,8 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from app.controllers.user_controller import get_current_user_id
 from app.controllers.endereco_controller import get_enderecos_by_usuario
-from app.models.user import home_top_eight,  get_categoria_users
-from app.models.categoria import get_all_categorias, verify_categoria
+from app.models.user import home_top_eight,  get_categoria_users, search_users
+from app.models.categoria import get_all_categorias, get_categoria_by_id, verify_categoria
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -26,6 +26,12 @@ async def categories_page(request: Request, id:int):
         if id:
             if verify_categoria(id):
                 users =  get_categoria_users(id)
-                return "oi"
+                categoria = get_categoria_by_id(id)
+                return templates.TemplateResponse("categoria/categoria.html", {"request": request, "users": users, "categoria": categoria})
             
     return "Categoria não encontrada"
+
+@router.get ("/busca", response_class=HTMLResponse)
+async def search_page(request: Request, b: str):
+    users = search_users(b)
+    return templates.TemplateResponse("busca/busca.html", {"request": request, "users": users, "busca": b})

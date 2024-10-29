@@ -3,22 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página inicial</title>
+    <title>{{categoria.nome}}</title>
 </head>
 <body>
-    <p>Bem vindo ao ContrataPro!</p>
-
-    <form action="/busca" method="get">
-        <input type="text" name="b" placeholder="Pesquise por...">
-        <button type="submit">Buscar</button>
-    </form>
-
-    {% for categoria in categorias %}
-
-    <a href="/categoria?id={{categoria.id}}">{{categoria.nome}}</a>
-
-    {% endfor %}
-
+    <h1>Veja prestadores da categoria: {{categoria.nome}}</h1>
     <ul>
         {% for user in users %}
             <li>
@@ -26,10 +14,11 @@
                 Média de Avaliação: {{ user.media_avaliacao }} <br>
                 Categorias: <br>
                 {% for categoria in user.categorias %}
-                {{categoria.categoria_nome}},
+                    {{categoria.categoria_nome}},
                 {% endfor %}
             </li>
         {% endfor %}
     </ul>
+
 </body>
 </html>

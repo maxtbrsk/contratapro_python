@@ -15,3 +15,11 @@ async def register_page(request: Request):
 @router.get("/auth/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("auth/login.html", {"request": request})
+
+@router.get("/categorias", response_class=HTMLResponse)
+async def categorias_page(request: Request):
+    return templates.TemplateResponse("auth/categorias.html", {"request": request})
+
+@router.get("/criar_endereco", response_class=HTMLResponse)
+async def enderecos_page(request: Request):
+    return templates.TemplateResponse("auth/enderecos.html", {"request": request})
