@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Usuário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+    {% if user.nome_completo is not none %}
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Perfil do Usuário</h1>
+
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Informações Gerais</h2>
+                <div class="space-y-2">
+                    <p class="text-gray-600"><span class="font-medium">ID:</span> {{ user.id }}</p>
+                    <p class="text-gray-600"><span class="font-medium">Nome Completo:</span> {{ user.nome_completo }}</p>
+                    <p class="text-gray-600"><span class="font-medium">Telefone:</span> {{ user.telefone }}</p>
+                    <p class="text-gray-600"><span class="font-medium">CPF:</span> {{ user.cpf }}</p>
+                    <p class="text-gray-600"><span class="font-medium">CNPJ:</span> {{ user.cnpj }}</p>
+                    <p class="text-gray-600"><span class="font-medium">Tipo:</span> {{ user.tipo }}</p>
+                    <p class="text-gray-600"><span class="font-medium">Área de Atuação:</span> {{ user.area_atuacao }}</p>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Descrição</h2>
+                <p class="text-gray-600">{{ user.descricao }}</p>
+            </div>
+
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Currículo</h2>
+                <a href="/app/static/curriculos/{{ user.curriculo }}" 
+                   class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+                   download>Baixar Currículo</a>
+            </div>
+
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Foto</h2>
+                <img src="/app/static/fotos/{{ user.foto }}" 
+                     alt="Foto do Usuário" 
+                     class="w-32 h-32 object-cover rounded-full shadow-md">
+            </div>
+
+            <div class="flex space-x-4">
+                <form action="/favoritar/{{ user.id }}" method="post">
+                    <button type="submit" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <img src="/app/static/imgs/star.svg" alt="Favoritar" class="w-6 h-6">
+                    </button>
+                </form>
+                <form action="/conversa/{{ user.id }}" method="post">
+                    <button type="submit" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <img src="/app/static/imgs/chat.svg" alt="Conversa" class="w-6 h-6">
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center text-gray-600 text-xl">Usuário não existente</div>
+    {% endif %}
+</body>
+</html>

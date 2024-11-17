@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+ }
+ 
+.bg-register {
+    background-image: url('/app/static/imgs/retanguloCiano.svg');
+}
+.bg-standard{
+    background-color: #33A4AB;
+}
+.bg-cinza{
+    background-color: #E4E4E4;
+}
+.register-box{
+    display: flex;
+    background-color: #E4E4E4;
+    border-radius: 10px;
+    width: 10rem;
+    height: 10rem;
+    font-size: 1.25rem;
+    justify-content: center;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    text-align: center;
+    padding: 0.8rem;
+}
+
+.w-user{
+    width: 55%;
+}
+
+.mrg{
+  display: block;  
+}
+
+@media (max-width: 768px) {
+    .mrg{
+        margin-top: 120px;
+    }
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none; /* IE e Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Definir a largura flexível dos itens */
+  .flex-basis-50 {
+    flex: 0 0 50%;
+  }
+
+  @media (min-width: 768px) {
+    .flex-basis-md-20 {
+      flex: 0 0 20%;
+    }
+  }
+  

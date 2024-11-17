@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/app/static/style.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Registre-se como Prestador de serviço</title>
+</head>
+
+<body class="max-h-[100vh]">
+    <div class="flex w-fit">
+        <div class="bg-register w-2/6 text-white h-screen content-center justify-items-center hidden md:grid">
+            <img src="/app/static/imgs/hammerW.svg" class="w-3/12" alt="Martelo">
+            <h1 class="text-2xl font-semibold w-2/3 text-center mt-6">Faça seu cadastro como prestador de serviço</h1>
+        </div>
+        <div class="content-center justify-items-center w-4/6 w-fit">
+            <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="flex justify-center  w-2/5 mt-10 md:hidden">
+            <form action="/auth/register" method="post" enctype="multipart/form-data" class="w-8/12">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-rows-1">
+                        <input type="text" id="nome_completo" name="nome_completo" required placeholder="Nome"
+                        class="m-2 p-2 border border-gray-300 rounded">
+                        <input type="text" id="telefone" name="telefone" required placeholder="Telefone"
+                        class="m-2 p-2 border border-gray-300 rounded">
+                        <input type="password" id="senha" name="senha" required placeholder="Senha"
+                        class="m-2 p-2 border border-gray-300 rounded">
+                    </div>
+                    <div class="grid grid-rows-1">
+                        <input type="text" id="cpf" name="cpf" required placeholder="CPF"
+                        class="m-2 p-2 border border-gray-300 rounded">
+                        <input type="text" id="cnpj" name="cnpj" placeholder="CNPJ"
+                        class="m-2 p-2 border border-gray-300 rounded">
+                        <input type="text" id="area_atuacao" name="area_atuacao" placeholder="Área de Atuação"
+                        class="m-2 p-2 border border-gray-300 rounded">
+                    </div>
+                </div>
+                <textarea id="descricao" name="descricao" placeholder="Descrição"
+                    class="w-full m-2 p-2 border border-gray-300 rounded"></textarea>
+                <div class="flex-wrap justify-items-center">
+                    <div class="flex justify-between w-10/12">
+                        <label for="curriculo" class="mt-2 font-semibold">Currículo (PDF):</label>
+                        <input type="file" id="curriculo" name="curriculo" accept="application/pdf"
+                            placeholder="Currículo" class="m-2 p-2 w-full">
+                    </div>
+                    <div class="flex justify-between w-10/12">
+                        <label for="foto" class="font-semibold">Foto de perfil:</label>
+                        <input type="file" id="foto" name="foto" accept="image/*" required placeholder="Foto de perfil"
+                            class="m-2 p-2 w-full">
+                    </div>
+                    <div class="flex justify-center">
+                        <input type="text" id="tipo" name="tipo" value="prestador" class="hidden">
+                        <button type="submit"
+                            class="text-white bg-teal-600 text-xl font-semibold px-4 py-2 w-64 mt-6 rounded">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

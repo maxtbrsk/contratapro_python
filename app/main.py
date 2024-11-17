@@ -1,12 +1,11 @@
 from fastapi import FastAPI, Request
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
-from app.controllers import auth_controller, user_controller, endereco_controller, categoria_controller
-from app.views import user_views, auth_views, home_views
+from app.router import auth_router, user_router, endereco_router, categoria_router, home_router
 
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory="app/views")
 
 # Criação da aplicação FastAPI
 app = FastAPI()
@@ -26,21 +25,19 @@ app.add_middleware(
 )
 
 # Montar a pasta de arquivos estáticos (CSS, JS, Imagens)
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
 
 # Incluindo os controladores (rotas)
-app.include_router(auth_controller.router)
-app.include_router(user_controller.router)
-app.include_router(endereco_controller.router)
-app.include_router(categoria_controller.router)
-app.include_router(user_views.router)
-app.include_router(auth_views.router)
-app.include_router(home_views.router)
+app.include_router(auth_router.router)
+app.include_router(user_router.router)
+app.include_router(endereco_router.router)
+app.include_router(categoria_router.router)
+app.include_router(home_router.router)
 
 # Rota de teste para verificar se a aplicação está funcionando
 @app.get("/")
 async def root(request: Request):
-    return templates.TemplateResponse("landing.html", {"request": request})
+    return RedirectResponse(url="/auth/login")
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,0 +1,6 @@
+DB_HOST=mysql.infocimol.com.br
+DB_PORT=3306
+DB_USER=infocimol06
+DB_PASSWORD=M68591205
+DB_NAME=infocimol06
+SECRET="PEROLAKALI"

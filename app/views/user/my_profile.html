@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Usuário</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <h1>Perfil do Usuário</h1>
+
+    <div>
+        <h2>Informações Gerais</h2>
+        <p><strong>ID:</strong> {{ user.id }}</p>
+        <p><strong>Nome Completo:</strong> {{ user.nome_completo }}</p>
+        <p><strong>Telefone:</strong> {{ user.telefone }}</p>
+        <p><strong>CPF:</strong> {{ user.cpf }}</p>
+        <p><strong>CNPJ:</strong> {{ user.cnpj }}</p>
+        <p><strong>Tipo:</strong> {{ user.tipo }}</p>
+        <p><strong>Área de Atuação:</strong> {{ user.area_atuacao }}</p>
+    </div>
+
+    <div>
+        <h2>Descrição</h2>
+        <p>{{ user.descricao }}</p>
+    </div>
+
+    <div>
+        <h2>Currículo</h2>
+        <a href="/app/static/curriculos/{{ user.curriculo }}" download>Baixar Currículo</a>
+    </div>
+
+    <div>
+        <h2>Foto</h2>
+        <img src="/app/static/fotos/{{ user.foto }}" alt="Foto do Usuário" width="150">
+    </div>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal">Editar Perfil</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="/usuarios/update/{{user.id}}" method="POST" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Editar Perfil</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="nome_completo">Nome Completo</label>
+                            <input type="text" class="form-control" id="nome_completo" name="nome_completo" value="{{ user.nome_completo }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefone">Telefone</label>
+                            <input type="text" class="form-control" id="telefone" name="telefone" value="{{ user.telefone }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="cpf">CPF</label>
+                            <input type="text" class="form-control" id="cpf" name="cpf" value="{{ user.cpf }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="cnpj">CNPJ</label>
+                            <input type="text" class="form-control" id="cnpj" name="cnpj" value="{{ user.cnpj }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo">Tipo</label>
+                            <input type="text" class="form-control" id="tipo" name="tipo" value="{{ user.tipo }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="area_atuacao">Área de Atuação</label>
+                            <input type="text" class="form-control" id="area_atuacao" name="area_atuacao" value="{{ user.area_atuacao }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="descricao">Descrição</label>
+                            <textarea class="form-control" id="descricao" name="descricao">{{ user.descricao }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="curriculo">Currículo</label>
+                            <input type="file" class="form-control" id="curriculo" name="curriculo">
+                        </div>
+                        <div class="form-group">
+                            <label for="foto">Foto</label>
+                            <input type="file" class="form-control" id="foto" name="foto">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn btn-primary">Salvar mudanças</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
