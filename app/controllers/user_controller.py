@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
-from app.antigos.user_controller import get_current_user_id
 from app.models.user import get_user_by_id
 from passlib.hash import bcrypt
 templates = Jinja2Templates(directory="app/views")

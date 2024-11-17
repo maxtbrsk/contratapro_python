@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Request, Form, File, UploadFile
-from app.antigos.user_views import user_profile
 from dotenv import load_dotenv
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from app.controllers.user_controller import update_user_profile, user_profile
-from app.models.user import get_user_by_id
+
 templates = Jinja2Templates(directory="app/views")
 
 router = APIRouter()
@@ -59,3 +58,4 @@ async def update_user_route(
     )
     print(ok)
     return RedirectResponse(url=f"/usuarios/{user_id}", status_code=303)
+

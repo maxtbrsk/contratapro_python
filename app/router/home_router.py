@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
-from app.antigos.home_views import categories_page, home_page, search_page
+
+from app.controllers.home_controller import home_page, search_page
+
 
 router = APIRouter()
 

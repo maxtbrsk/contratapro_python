@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse
-from app.antigos.home_views import categories_page
+from app.controllers.categoria_controller import categories_page
 from app.controllers.categoria_controller import add_prest_catg
 from app.models.categoria import get_all_categorias 
 from app.models.categoria import relate_user_to_categoria
-from app.antigos.user_controller import get_current_user_id
+from app.controllers.user_controller import get_current_user_id
 
 router = APIRouter()
 

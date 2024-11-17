@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Form
 
-from app.antigos.endereco_controller import add_endereco
+from app.controllers.endereco_controller import add_endereco
 
 router = APIRouter()
 

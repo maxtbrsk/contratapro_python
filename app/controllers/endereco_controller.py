@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Form
 from app.models.endereco import create_endereco
-from app.antigos.user_controller import get_current_user_id
+from app.controllers.user_controller import get_current_user_id
 from fastapi.responses import RedirectResponse
 from app.models.user import get_user_type
 

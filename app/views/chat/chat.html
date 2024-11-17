@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Contrata PRO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex h-screen">
+    <div class="w-[30%] bg-gray-50 border-r border-gray-200 overflow-y-auto">
+        {% for chat in chats %}
+        <a href="/chat/{{ chat.id }}" class="block">
+            <div class="flex items-center p-4 hover:bg-gray-100 border-b border-gray-200 cursor-pointer">
+                <img src="/app/static/fotos/{{chat.outro_usuario_foto}}" 
+                     alt="{{ chat.outro_usuario_nome }}" 
+                     class="w-12 h-12 rounded-full mr-4">
+                <span class="text-gray-700">{{ chat.outro_usuario_nome }}</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    <div class="w-[70%] flex items-center justify-center bg-white p-5">
+        <div class="text-lg text-gray-500">
+            Clique para abrir uma conversa
+        </div>
+    </div>
+</body>
+</html>

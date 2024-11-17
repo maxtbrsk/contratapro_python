@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
-from app.router import auth_router, user_router, endereco_router, categoria_router, home_router
+from app.router import auth_router, chat_router, user_router, endereco_router, categoria_router, home_router
 
 templates = Jinja2Templates(directory="app/views")
 
@@ -33,7 +33,7 @@ app.include_router(user_router.router)
 app.include_router(endereco_router.router)
 app.include_router(categoria_router.router)
 app.include_router(home_router.router)
-
+app.include_router(chat_router.router)
 # Rota de teste para verificar se a aplicação está funcionando
 @app.get("/")
 async def root(request: Request):
