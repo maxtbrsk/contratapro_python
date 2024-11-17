@@ -1,5 +1,4 @@
 from app.models.database import Database
-
 def create_chat(cliente_id, prestador_id):
     db = Database()
     query = "SELECT * FROM conversas WHERE cliente_id = %s AND prestador_id = %s"
@@ -71,3 +70,15 @@ def get_chat_by_id(chat_id, user_id):
     conversa['mensagens'] = mensagens
     db.close()
     return conversa
+
+# app/models/chat.py
+
+async def save_message(chat_id, user_id, content):
+    db = Database()
+    query = """
+        INSERT INTO mensagens (conversa_id, usuario_id, mensagem, data_envio)
+        VALUES (%s, %s, %s, NOW())
+    """
+    db.execute(query, (chat_id, user_id, content))
+    db.commit()
+    db.close()
