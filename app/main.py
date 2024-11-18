@@ -77,8 +77,6 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: int):
             # Broadcast the message to all clients in the chat
             await broadcast(chat_id, message)
             # Transmitir mensagem para todos os clientes no chat e atualizar a lista de conversas
-            await broadcast(chat_id, message)
-            # Opcionalmente, notificar outros usuários para atualizar a lista de chats
     except WebSocketDisconnect:
         await disconnect(websocket, chat_id)
 

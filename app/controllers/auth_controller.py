@@ -54,14 +54,14 @@ async def register_user(
 
 def login_user(
     request: Request,
-    telefone: str,
-    senha: str
+    telefone: str = Form(...),
+    senha: str = Form(...)
 ):
     user = get_user_by_telefone(telefone)
     if not user or not bcrypt.verify(senha, user["senha"]):
         raise HTTPException(status_code=401, detail="Credenciais inválidas")
     
-    response = JSONResponse({"message": "Login realizado com sucesso"})
+    response = RedirectResponse(url="/home", status_code=303)
     response.set_cookie(key="access_token", value=user['id'], httponly=True)
     
     return response

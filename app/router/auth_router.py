@@ -27,7 +27,7 @@ async def login_route(
     request: Request,
     telefone: str = Form(...),
     senha: str = Form(...)):
-    return await login_user(request, telefone, senha)
+    return login_user(request, telefone, senha)
 
 @router.post("/auth/logout")
 async def logout_route(request: Request):
