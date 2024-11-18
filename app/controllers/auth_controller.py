@@ -67,7 +67,7 @@ def login_user(
     return response
 
 def logout_user(request: Request):
-    response = JSONResponse({"message": "Logout realizado com sucesso"})
+    response = RedirectResponse(url="/auth/login", status_code=303)
     response.delete_cookie(key="access_token")
     return response
 
