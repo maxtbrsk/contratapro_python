@@ -8,7 +8,7 @@
 </head>
 <body class="flex h-screen">
     <!-- Lista de conversas -->
-    <div class="w-[30%] bg-gray-50 border-r border-gray-200 overflow-y-auto">
+    <div id="chatList" class="w-[30%] bg-gray-50 border-r border-gray-200 overflow-y-auto" id="chatList">
         {% for chat in chats %}
         <a href="/chat/{{ chat.id }}" class="block {% if chat.id == conversa.id %}bg-gray-200{% endif %}">
             <div class="flex items-center p-4 hover:bg-gray-100 border-b border-gray-200 cursor-pointer">
@@ -64,22 +64,43 @@
     <script>
         const userId = {{ user_id }};
         const chatId = {{ conversa.id }};
-        const ws = new WebSocket(`ws://${window.location.host}/ws/chat/${chatId}`);
+        const ws = new WebSocket(`ws://${window.location.host}/ws/chat/${chatId}?user_id=${userId}`);
 
         ws.onmessage = function(event) {
             const data = JSON.parse(event.data);
-            // Atualizar a área de chat com a nova mensagem
+            if (data.type === "new_message_notification") {
+                // Se a notificação for de nova mensagem
+                if (data.chat_id === chatId) {
+                    // Se estiver na conversa atual, exibir a mensagem no chat
+                    atualizarChat(data.message);
+                } else {
+                    // Se for outra conversa, atualizar a lista de chats
+                    atualizarListaChats();
+                }
+            }
+            // Outros tipos de mensagens podem ser tratados aqui
+        };
+
+        function atualizarChat(messageData) {
             const chatBox = document.getElementById('chatBox');
             const messageDiv = document.createElement('div');
-            messageDiv.classList.add('flex', data.user_id === userId ? 'justify-end' : 'justify-start', 'mb-4');
+            messageDiv.classList.add('flex', messageData.user_id === userId ? 'justify-end' : 'justify-start', 'mb-4');
             messageDiv.innerHTML = `
-                <div class="max-w-xs ${data.user_id === userId ? 'bg-blue-500 text-white' : 'bg-gray-200'} p-2 rounded">
-                    <p>${data.message}</p>
+                <div class="max-w-xs ${messageData.user_id === userId ? 'bg-blue-500 text-white' : 'bg-gray-200'} p-2 rounded">
+                    <p>${messageData.message}</p>
                 </div>
             `;
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
-        };
+        }
+
+        function atualizarListaChats() {
+            fetch('/chats')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('chatList').innerHTML = html;
+                });
+        }
 
         document.getElementById('messageForm').addEventListener('submit', function(event) {
             event.preventDefault();

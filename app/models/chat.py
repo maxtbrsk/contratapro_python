@@ -18,7 +18,10 @@ def create_chat(cliente_id, prestador_id):
 def get_chats_by_user_id(user_id):
     db = Database()
     query = """
-        SELECT c.*, 
+        SELECT 
+            c.id,
+            c.cliente_id,
+            c.prestador_id,
             CASE 
                 WHEN c.cliente_id = %s THEN p.nome_completo
                 ELSE cl.nome_completo
@@ -28,25 +31,41 @@ def get_chats_by_user_id(user_id):
                 ELSE cl.foto
             END as outro_usuario_foto,
             (
-                SELECT mensagem FROM mensagens 
-                WHERE conversa_id = c.id 
-                ORDER BY data_envio DESC 
+                SELECT m.mensagem 
+                FROM mensagens m
+                WHERE m.conversa_id = c.id 
+                ORDER BY m.data_envio DESC 
                 LIMIT 1
             ) as ultima_mensagem,
             (
-                SELECT COUNT(*) FROM mensagens 
-                WHERE conversa_id = c.id AND usuario_id != %s AND lida = FALSE
+                SELECT m.data_envio 
+                FROM mensagens m
+                WHERE m.conversa_id = c.id 
+                ORDER BY m.data_envio DESC 
+                LIMIT 1
+            ) as ultima_mensagem_tempo,
+            (
+                SELECT COUNT(*) 
+                FROM mensagens m
+                WHERE m.conversa_id = c.id AND m.usuario_id != %s AND m.lida = FALSE
             ) as nao_lidas
         FROM conversas c
         JOIN usuarios cl ON c.cliente_id = cl.id
         JOIN usuarios p ON c.prestador_id = p.id
         WHERE c.cliente_id = %s OR c.prestador_id = %s
+        ORDER BY ultima_mensagem_tempo DESC
     """
-    db.execute(query, (user_id, user_id, user_id, user_id, user_id))
+    db.execute(query, (
+        user_id,  # Para CASE WHEN c.cliente_id = %s
+        user_id,  # Para CASE WHEN c.cliente_id = %s (foto)
+        user_id,  # Para COUNT de mensagens não lidas
+        user_id,  # WHERE c.cliente_id = %s
+        user_id   # OR c.prestador_id = %s
+    ))
     conversas = db.cursor.fetchall()
     db.close()
     return conversas
-
+    
 def get_chat_by_id(chat_id, user_id):
     db = Database()
     query = """
