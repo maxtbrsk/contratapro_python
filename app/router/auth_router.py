@@ -29,7 +29,7 @@ async def login_route(
     senha: str = Form(...)):
     return login_user(request, telefone, senha)
 
-@router.post("/auth/logout")
+@router.get("/auth/logout")
 async def logout_route(request: Request):
     return logout_user(request)
 
