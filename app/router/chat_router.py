@@ -30,27 +30,3 @@ async def get_chat(request: Request, chat_id: int):
     mark_messages_as_read(chat_id, user_id)
     chats = get_chats_by_user_id(user_id)
     return templates.TemplateResponse("chat/one_chat.html", {"request": request, "conversa": conversa, "chats": chats, "user_id": user_id})
-
-@router.get("/chats")
-async def chat_list(request: Request):
-    user_id = int(get_current_user_id(request))
-    chats = get_chats_by_user_id(user_id)
-    conversa = None  # Define como None se não houver conversa ativa
-    return templates.TemplateResponse("chat/chat_list.html", {
-        "request": request,
-        "chats": chats,
-        "user_id": user_id,
-        "conversa": conversa
-    })
-
-@router.get("/chat/list")
-async def chat_list(request: Request):
-    user_id = int(get_current_user_id(request))
-    chats = get_chats_by_user_id(user_id)
-    conversa = None  # Define como None se não houver conversa ativa
-    return templates.TemplateResponse("chat/chat_list.html", {
-        "request": request,
-        "chats": chats,
-        "user_id": user_id,
-        "conversa": conversa
-    })
