@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from app.models.user import get_user_by_id
 from passlib.hash import bcrypt
+from app.models.user import get_favorites
 templates = Jinja2Templates(directory="app/views")
 
 load_dotenv()
@@ -30,7 +31,6 @@ def get_current_user(request: Request):
     # Retorna os dados do usuário sem a senha
     user.pop("senha", None)
     return user
-
 
 def update_current_user(
     request: Request,
@@ -94,9 +94,12 @@ def user_profile(request: Request, user_id: int):
     current_user = get_current_user_id(request)
     id = user_id
     user = get_user_by_id(id)
+    favoritos = get_favorites(current_user)
+    favoritos_ids = [favorito['prestador_id'] for favorito in favoritos]
+    
     if int(id) == int(current_user):
-        return templates.TemplateResponse("user/my_profile.html", {"request": request, "user": user})
+        return templates.TemplateResponse("user/my_profile.html", {"request": request, "user": user, "user_id": current_user})
     if not user:
-        return templates.TemplateResponse("user/non_existing.html", {"request": request})
-    print(user)
-    return templates.TemplateResponse("user/profile.html", {"request": request, "user": user})
+        return templates.TemplateResponse("user/non_existing.html", {"request": request, "user_id": current_user})
+    return templates.TemplateResponse("user/profile.html", {"request": request, "user": user, "favoritos_ids": favoritos_ids , "user_id": current_user})
+

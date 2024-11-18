@@ -56,6 +56,33 @@ def get_user_by_id(user_id):
     query = "SELECT * FROM usuarios WHERE id = %s"
     db.execute(query, (user_id,))
     user = db.cursor.fetchone()
+    
+    if user:
+        query = """
+            SELECT 
+            c.nome AS categoria_nome,
+            pc.categoria_id AS categoria_id
+            FROM 
+            prestador_categorias pc
+            JOIN 
+            categorias c ON pc.categoria_id = c.id
+            WHERE 
+            pc.prestador_id = %s;
+        """
+        db.execute(query, (user_id,))
+        categorias = db.cursor.fetchall()
+        user["categorias"] = categorias
+        
+        query = "SELECT * FROM enderecos WHERE usuario_id = %s"
+        db.execute(query, (user_id,))
+        endereco = db.cursor.fetchone()
+        user["endereco"] = endereco
+        
+        query = "SELECT AVG(nota) AS media_avaliacao FROM avaliacoes WHERE prestador_id = %s"
+        db.execute(query, (user_id,))
+        avaliacao = db.cursor.fetchone()
+        user["media_avaliacao"] = round(avaliacao["media_avaliacao"], 1) if avaliacao and avaliacao["media_avaliacao"] is not None else 0.0
+    print(user)
     db.close()
     return user
 
@@ -237,7 +264,7 @@ def search_users(term):
     db = Database()
     term = f"%{term}%"
     query = """
-        SELECT DISTINCT u.id, u.nome_completo, u.area_atuacao, u.descricao,
+        SELECT DISTINCT u.id, u.nome_completo, u.area_atuacao, u.descricao, u.foto,
         ROUND(COALESCE(AVG(a.nota), 0), 1) AS media_avaliacao
         FROM usuarios u
         LEFT JOIN prestador_categorias pc ON u.id = pc.prestador_id
@@ -289,16 +316,16 @@ def remove_favorite(cliente_id, prestador_id):
     db.commit()
     db.close()
 
-def get_favorites(cliente_id):
+def get_favorites(cliente_id: int):
     from app.models.database import Database
     db = Database()
     query = """
-        SELECT u.*
-        FROM favoritos f
+        SELECT f.*, u.nome_completo, u.foto FROM favoritos f
         JOIN usuarios u ON f.prestador_id = u.id
         WHERE f.cliente_id = %s
     """
     db.execute(query, (cliente_id,))
     favoritos = db.cursor.fetchall()
+    print(favoritos)
     db.close()
     return favoritos

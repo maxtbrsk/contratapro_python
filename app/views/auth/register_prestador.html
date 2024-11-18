@@ -10,15 +10,15 @@
 </head>
 
 <body class="max-h-[100vh]">
-    <div class="flex w-fit">
+    <div class="flex">
         <div class="bg-register w-2/6 text-white h-screen content-center justify-items-center hidden md:grid">
             <img src="/app/static/imgs/hammerW.svg" class="w-3/12" alt="Martelo">
             <h1 class="text-2xl font-semibold w-2/3 text-center mt-6">Faça seu cadastro como prestador de serviço</h1>
         </div>
-        <div class="content-center justify-items-center w-4/6 w-fit">
-            <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="flex justify-center  w-2/5 mt-10 md:hidden">
+        <div class="content-center justify-items-center md:w-4/6">
+            <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="flex justify-center my-12 w-2/5 mt-10 md:hidden">
             <form action="/auth/register" method="post" enctype="multipart/form-data" class="w-8/12">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="md:grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="grid grid-rows-1">
                         <input type="text" id="nome_completo" name="nome_completo" required placeholder="Nome"
                         class="m-2 p-2 border border-gray-300 rounded">
@@ -36,18 +36,20 @@
                         class="m-2 p-2 border border-gray-300 rounded">
                     </div>
                 </div>
-                <textarea id="descricao" name="descricao" placeholder="Descrição"
-                    class="w-full m-2 p-2 border border-gray-300 rounded"></textarea>
+                <div class="w-full">
+                    <textarea id="descricao" name="descricao" placeholder="Descrição"
+                    class="md:w-full m-2 p-2 border border-gray-300 rounded"></textarea>
+                </div>
                 <div class="flex-wrap justify-items-center">
-                    <div class="flex justify-between w-10/12">
+                    <div class="flex justify-between w-11/12">
                         <label for="curriculo" class="mt-2 font-semibold">Currículo (PDF):</label>
                         <input type="file" id="curriculo" name="curriculo" accept="application/pdf"
-                            placeholder="Currículo" class="m-2 p-2 w-full">
+                            placeholder="Currículo" class="m-2 p-2 w-2/3">
                     </div>
-                    <div class="flex justify-between w-10/12">
+                    <div class="flex justify-between w-11/12">
                         <label for="foto" class="font-semibold">Foto de perfil:</label>
                         <input type="file" id="foto" name="foto" accept="image/*" required placeholder="Foto de perfil"
-                            class="m-2 p-2 w-full">
+                            class="m-2 p-2 w-2/3">
                     </div>
                     <div class="flex justify-center">
                         <input type="text" id="tipo" name="tipo" value="prestador" class="hidden">

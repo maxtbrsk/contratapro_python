@@ -5,25 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/app/static/style.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Registre-se como Prestador de serviço</title>
+    <title>Registre-se como Cliente o</title>
 </head>
 <body class="max-h-[100vh]">
     <div class="flex">
         <div class="bg-register w-2/6 text-white h-screen content-center justify-items-center hidden md:grid">
             <img src="/app/static/imgs/userW.svg" class="w-3/12" alt="Martelo">
-            <h1 class="text-xl font-semibold w-2/3 text-center mt-6">Faça seu cadastro como prestador de serviço</h1>
+            <h1 class="text-xl font-semibold w-2/3 text-center mt-6">Faça seu cadastro como cliente</h1>
         </div>
-        <div class="content-center justify-items-center w-4/6">
-            <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="w-2/5 mt-10 md:hidden">
-            <form action="/auth/register" method="post" enctype="multipart/form-data" class="w-3/5">
-
-                <input type="text" id="nome_completo" name="nome_completo" required placeholder="Nome" class="m-2 p-2 border border-gray-300 rounded">
-                <input type="text" id="telefone" name="telefone" required placeholder="Telefone" class="m-2 p-2 border border-gray-300 rounded">
-                <input type="password" id="senha" name="senha" required placeholder="Senha" class="m-2 p-2 border border-gray-300 rounded">
-                <input type="text" id="cpf" name="cpf" required placeholder="CPF" class="m-2 p-2 border border-gray-300 rounded">
-                <input type="file" id="foto" name="foto" accept="image/*" required placeholder="Foto de perfil" class="m-2 p-2 border border-gray-300 rounded">
-                <input type="text" id="tipo" name="tipo" value="cliente" readonly class="hidden">
-                <button type="submit" class="bg-standard text-white text-xl font-semibold p-2 rounded">Registrar</button>
+        <div class="content-center justify-items-center w-full md:w-4/6">
+            <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="w-2/5 my-12 md:hidden">
+            <form action="/auth/register" method="post" enctype="multipart/form-data" class="w-4/5 justify-items-center">
+                <input type="text" id="nome_completo" name="nome_completo" required placeholder="Nome" class="flex justify-center w-2/3 m-2 p-2 border border-gray-300 rounded">
+                <input type="text" id="telefone" name="telefone" required placeholder="Telefone" class="flex justify-center w-2/3 m-2 p-2 border border-gray-300 rounded">
+                <input type="password" id="senha" name="senha" required placeholder="Senha" class="flex justify-center w-2/3 m-2 p-2 border border-gray-300 rounded">
+                <input type="text" id="cpf" name="cpf" required placeholder="CPF" class="flex justify-center w-2/3 m-2 p-2 border border-gray-300 rounded">
+                <label for="foto" class="font-semibold">Foto de perfil:</label> 
+                <input type="file" id="foto" name="foto" accept="image/*" required placeholder="Foto de perfil" class="flex justify-center w-2/3 m-2 p-2 border border-gray-300 rounded">
+                <input type="text" id="tipo" name="tipo" value="cliente" readonly class="hidden w-2/3">
+                <div class="w-2/3 flex justify-center">
+                    <button type="submit" class="bg-standard text-white text-xl font-semibold p-2 m-4 w-2/3 rounded">Registrar</button>
+                </div>
+                
             </form>
         </div>
     </div>

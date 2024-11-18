@@ -1,5 +1,6 @@
-<!-- app/views/chat/chat_list.html -->
+{% extends "base.html" %}
 
+{% block content %}
 {% for chat in chats %}
 <a href="/chat/{{ chat.id }}" class="block {% if chat.id == conversa.id %}bg-gray-200{% endif %}">
     <div class="flex items-center p-4 hover:bg-gray-100 border-b border-gray-200 cursor-pointer">
@@ -18,3 +19,4 @@
     </div>
 </a>
 {% endfor %}
+{% endblock %}

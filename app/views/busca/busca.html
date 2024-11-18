@@ -1,24 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{busca}}</title>
-</head>
-<body>
-    <h1>Resultados de sua busca: {{busca}}</h1>
-    <ul>
-        {% for user in users %}
-            <li>
-                Nome: {{ user.nome_completo }}<br>
-                Média de Avaliação: {{ user.media_avaliacao }} <br>
-                Categorias: <br>
-                {% for categoria in user.categorias %}
-                    {{categoria.categoria_nome}},
-                {% endfor %}
-            </li>
-        {% endfor %}
-    </ul>
+{% extends "base.html" %}
 
-</body>
-</html>
+
+{% block content %}
+<h1 class="text-3xl font-bold m-8 md:my-12 md:mx-24">Resultados da busca: {{busca}}</h1>
+    <div class="mx-8 md:mx-24 grid grid-cols-1 md:grid-cols-2 gap-8">
+      {% for user in users %}
+      <a class="flex items-center p-6 hover:bg-gray-100 rounded-xl transition" href="/usuarios/{{user.prestador_id}}">
+        <div class="w-32 h-32 flex-shrink-0">
+            <img
+            src="/app/static/fotos/{{ user.foto }}"
+            class="w-32 h-32 rounded-lg"
+            alt="Foto de perfil"
+            />
+        </div>
+        <div class="ml-6">
+          <p class="font-semibold text-xl">{{ user.nome_completo }}</p>
+          <p>
+            {% for categoria in user.categorias %} {{ categoria.categoria_nome
+            }}{% if not loop.last %}, {% endif %} {% endfor %}
+          </p>
+          <div class="flex items-center mt-2">
+            <img src="/app/static/imgs/star.svg" alt="estrela" class="mr-2" />
+            {% if user.media_avaliacao == 0.0 %}
+            <span>Sem avaliações</span>
+            {% else %}
+            <span>{{ user.media_avaliacao }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+{% endblock %}
+

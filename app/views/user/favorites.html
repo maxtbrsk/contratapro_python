@@ -1,24 +1,33 @@
-<!-- app/views/user/favorites.html -->
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Meus Favoritos</title>
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-    <h1>Usuários Favoritados</h1>
-    <ul>
-        {% for user in favoritos %}
-            <li>
-                <img src="/app/static/fotos/{{ user.foto }}" alt="{{ user.nome_completo }}" class="w-12 h-12 rounded-full">
-                <span>{{ user.nome_completo }}</span>
-                <form action="/desfavoritar/{{user.id}}" method="post" style="display:inline;">
-                    <input type="hidden" name="prestador_id" value="{{ user.id }}">
-                    <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded">Desfavoritar</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="text-3xl font-bold m-8 md:my-12 md:mx-24">Usuários favoritos</h1>
+    <div class="mx-8 md:mx-24 grid grid-cols-1 md:grid-cols-2 gap-8">
+      {% for user in favoritos %}
+      <a class="flex items-center p-6 hover:bg-gray-100 rounded-xl transition" href="/usuarios/{{user.prestador_id}}">
+        <div class="w-32 h-32 flex-shrink-0">
+            <img
+            src="/app/static/fotos/{{ user.foto }}"
+            class="w-32 h-32 rounded-lg"
+            alt="Foto de perfil"
+            />
+        </div>
+        <div class="ml-6">
+          <p class="font-semibold text-xl">{{ user.nome_completo }}</p>
+          <p>
+            {% for categoria in user.categorias %} {{ categoria.categoria_nome
+            }}{% if not loop.last %}, {% endif %} {% endfor %}
+          </p>
+          <div class="flex items-center mt-2">
+            <img src="/app/static/imgs/star.svg" alt="estrela" class="mr-2" />
+            {% if user.media_avaliacao == 0.0 %}
+            <span>Sem avaliações</span>
+            {% else %}
+            <span>{{ user.media_avaliacao }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+{% endblock %}

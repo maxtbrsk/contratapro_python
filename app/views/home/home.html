@@ -1,139 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="/app/static/style.css" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>ContrataPro</title>
-  </head>
-  <body>
-    <header class="flex justify-between p-6">
-      <img
-        src="/app/static/imgs/ContrataPro.svg"
-        alt="ContrataPro"
-        class="w-1/3 md:w-2/12"
-      />
-      <div class="flex justify-center">
-        <form action="/busca" method="get" class="flex">
-          <input
-            type="text"
-            name="b"
-            placeholder="Busque por..."
-            class="hidden md:block p-2 mx-12 border bg-gray-200 rounded-full"
-          />
-          <button type="submit" class="hidden md:block">P</button>
-        </form>
-      </div>
-      <div class="flex">
-        <a href="/chat" class="mx-6"
-          ><img src="/app/static/imgs/chat.svg" alt=""
-        /></a>
-        <a href="" class="mx-6"
-          ><img src="/app/static/imgs/userC.svg" alt=""
-        /></a>
-      </div>
-    </header>
+{% extends "base.html" %}
 
-    <div>
-      <div class="overflow-hidden relative w-full text-teal-600">
-        <div
-          class="slider flex items-center ease-in-out duration-300 cursor-grab overflow-x-scroll hide-scrollbar"
-          id="slider"
+{% block content %}
+<h1 class="text-3xl font-bold m-8 md:my-2 md:mx-24">Categorias:</h1>
+<div class="relative">
+  <div class="overflow-hidden mx-8 md:mx-24 relative w-[80vw] text-teal-600">
+    <!-- Left Shadow -->
+    <div class="pointer-events-none absolute left-0 top-0 h-full w-8 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-300" id="leftShadow"></div>
+    <!-- Right Shadow -->
+    <div class="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white to-transparent opacity-0 transition-opacity duration-300" id="rightShadow"></div>
+
+    <!-- Left Arrow -->
+    <button
+      id="slideLeft"
+      class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md focus:outline-none"
+    >
+      <!-- Left Arrow Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Slider -->
+    <div
+      class="slider flex items-center ease-in-out duration-300 overflow-x-scroll hide-scrollbar scroll-smooth"
+      id="slider"
+    >
+      {% for categoria in categorias %}
+      <a
+        class="flex items-center justify-center bg-gray-300 min-w-32 min-h-32 max-w-32 max-h-32 p-4 m-4 rounded-full flex-col no-underline hover:no-underline"
+        href="/categoria?id={{ categoria.id }}"
+      >
+        <img
+          src="/app/static/imgs/categorias/{{ categoria.id }}.svg"
+          class="w-8 mx-auto mb-4"
+          alt="Símbolo área de atuação"
+        />
+        <p
+          class="w-fit font-bold text-sm md:text-xs text-center flex justify-center break-words"
         >
-          {% for categoria in categorias %}
-            <div
-            class="flex items-center justify-center bg-gray-300 min-w-32 min-h-32 max-w-32 max-h-32 p-4 m-4 rounded-full flex-col" 
-            >
-            <img
-              src="/app/static/imgs/hammer.svg"
-              class="w-8 mx-auto mb-4"
-              alt="Símbolo área de atuação"
-            />
-            <a
-              href="/categoria?id={{ categoria.id }}"
-              class="w-fit font-bold text-sm md:text-xs text-center flex justify-center break-words"
-              >{{ categoria.nome }}</a
-            >
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      
-      <script>
-        const slider = document.getElementById("slider");
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-
-        slider.addEventListener("mousedown", (e) => {
-          isDown = true;
-          slider.classList.add("cursor-grabbing");
-          startX = e.pageX - slider.offsetLeft;
-          scrollLeft = slider.scrollLeft;
-        });
-
-        slider.addEventListener("mouseleave", () => {
-          isDown = false;
-          slider.classList.remove("cursor-grabbing");
-        });
-
-        slider.addEventListener("mouseup", () => {
-          isDown = false;
-          slider.classList.remove("cursor-grabbing");
-        });
-
-        slider.addEventListener("mousemove", (e) => {
-          if (!isDown) return;
-          e.preventDefault();
-          const x = e.pageX - slider.offsetLeft;
-          const walk = (x - startX) * 1; // Ajuste o multiplicador para sensibilidade
-          slider.scrollLeft = scrollLeft - walk;
-        });
-
-        // Eventos de toque para dispositivos móveis
-        slider.addEventListener("touchstart", (e) => {
-          isDown = true;
-          startX = e.touches[0].pageX - slider.offsetLeft;
-          scrollLeft = slider.scrollLeft;
-        });
-
-        slider.addEventListener("touchend", () => {
-          isDown = false;
-        });
-
-        slider.addEventListener("touchmove", (e) => {
-          if (!isDown) return;
-          const x = e.touches[0].pageX - slider.offsetLeft;
-          const walk = (x - startX) * 1;
-          slider.scrollLeft = scrollLeft - walk;
-        });
-      </script>
-    </div>
-    <div class="m-8 md:m-24 grid grid-cols-1 md:grid-cols-2 gap-8">
-      {% for user in users %}
-      <div class="flex items-center p-6">
-        <div class="w-32 h-32 flex-shrink-0">
-          <img
-            src="/app/static/imgs/sem_foto.jpg"
-            class="rounded-lg"
-            alt="Foto de perfil"
-          />
-        </div>
-        <div class="ml-6">
-          <p class="font-semibold text-xl">{{ user.nome_completo }}</p>
-          <p>
-            {% for categoria in user.categorias %} {{ categoria.categoria_nome
-            }}{% if not loop.last %}, {% endif %} {% endfor %}
-          </p>
-          <div class="flex items-center mt-2">
-            <img src="/app/static/imgs/star.svg" alt="estrela" class="mr-2" />
-            <span>{{ user.media_avaliacao }}</span>
-          </div>
-        </div>
-      </div>
+          {{ categoria.nome }}
+        </p>
+      </a>
       {% endfor %}
     </div>
-  </body>
-</html>
+
+    <!-- Right Arrow -->
+    <button
+      id="slideRight"
+      class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md focus:outline-none"
+    >
+      <!-- Right Arrow Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    const slider = document.getElementById("slider");
+    const slideLeft = document.getElementById("slideLeft");
+    const slideRight = document.getElementById("slideRight");
+    const leftShadow = document.getElementById("leftShadow");
+    const rightShadow = document.getElementById("rightShadow");
+
+    function updateShadows() {
+      const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+      if (slider.scrollLeft > 0) {
+        leftShadow.classList.add('opacity-100');
+      } else {
+        leftShadow.classList.remove('opacity-100');
+      }
+      if (slider.scrollLeft < maxScrollLeft) {
+        rightShadow.classList.add('opacity-100');
+      } else {
+        rightShadow.classList.remove('opacity-100');
+      }
+    }
+
+    slider.addEventListener('scroll', updateShadows);
+
+    slideLeft.addEventListener("click", () => {
+      slider.scrollLeft -= 200; // Adjust scroll amount as needed
+      setTimeout(updateShadows, 300);
+    });
+
+    slideRight.addEventListener("click", () => {
+      slider.scrollLeft += 200; // Adjust scroll amount as needed
+      setTimeout(updateShadows, 300);
+    });
+
+    // Initial update
+    updateShadows();
+  </script>
+</div>
+
+<h1 class="text-3xl font-bold m-8 md:my-12 md:mx-24">Prestadores de serviço em destaque:</h1>
+<div class="mx-8 md:mx-24 grid grid-cols-1 md:grid-cols-2 gap-8 ">
+  {% for user in users %}
+  <a
+    class="flex items-center p-6 no-underline hover:no-underline hover:bg-gray-100 hover:text-black rounded-xl transition"
+    href="/usuarios/{{user.prestador_id}}"
+  >
+    <div class="w-32 h-32 flex-shrink-0">
+      <img
+        src="/app/static/fotos/{{ user.foto }}"
+        class="w-32 h-32 rounded-lg object-cover"
+        alt="Foto de perfil"
+      />
+    </div>
+    <div class="ml-6">
+      <p class="font-semibold text-xl">{{ user.nome_completo }}</p>
+      <p>
+        {% for categoria in user.categorias %}
+          {{ categoria.categoria_nome }}{% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+      <div class="flex items-center mt-2">
+        <img src="/app/static/imgs/star.svg" alt="estrela" class="mr-2" />
+        <span>{{ user.media_avaliacao }}</span>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

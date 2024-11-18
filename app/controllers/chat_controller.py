@@ -23,7 +23,7 @@ def create_chat_controller(request: Request, user_id: int):
 def get_all_chats(request: Request):
     current_user = get_current_user_id(request)
     chats = get_chats_by_user_id(current_user)
-    return views.TemplateResponse("chat/chat.html", {"request": request, "chats": chats})
+    return views.TemplateResponse("chat/chat.html", {"request": request, "chats": chats, "user_id": current_user})
 
 def get_chat(request: Request, chat_id: int):
     current_user = int(get_current_user_id(request))

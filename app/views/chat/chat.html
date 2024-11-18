@@ -1,28 +1,45 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat - Contrata PRO</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="flex h-screen">
-    <div class="w-[30%] bg-gray-50 border-r border-gray-200 overflow-y-auto">
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex h-[85vh]">
+    <div class="w-1/3 h-4/5 m-10 border-2 border-teal-600 rounded-xl overflow-y-auto">
+      <p class="my-2 ml-4 font-semibold text-xl">Convresas</p>
         {% for chat in chats %}
-        <a href="/chat/{{ chat.id }}" class="block">
-            <div class="flex items-center p-4 hover:bg-gray-100 border-b border-gray-200 cursor-pointer">
-                <img src="/app/static/fotos/{{chat.outro_usuario_foto}}" 
-                     alt="{{ chat.outro_usuario_nome }}" 
-                     class="w-12 h-12 rounded-full mr-4">
-                <span class="text-gray-700">{{ chat.outro_usuario_nome }}</span>
+        <a
+          href="/chat/{{ chat.id }}"
+          class="block {% if chat.id %}{% endif %} no-underline hover:no-underline"
+        >
+          <div
+            class="flex items-center p-4 hover:bg-gray-100 ease-in-out duration-200 ursor-pointer"
+          >
+            <img
+              src="/app/static/fotos/{{ chat.outro_usuario_foto }}"
+              alt="{{ chat.outro_usuario_nome }}"
+              class="w-12 h-12 rounded-full mr-4"
+            />
+            <div class="flex-1">
+              <span class="text-gray-700 font-semibold"
+                >{{ chat.outro_usuario_nome }}</span
+              >
+              <p class="text-gray-500 text-sm truncate">
+                {{ chat.ultima_mensagem }}
+              </p>
             </div>
+            {% if chat.nao_lidas > 0 %}
+            <span
+              class="ml-2 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs"
+            >
+              {{ chat.nao_lidas }}
+            </span>
+            {% endif %}
+          </div>
         </a>
         {% endfor %}
-    </div>
-    <div class="w-[70%] flex items-center justify-center bg-white p-5">
+      </div>
+    <div class="w-2/3 h-4/5 my-10 mr-10 border-2 border-teal-600 rounded-xl flex flex-col h-2/3 bg-white flex items-center justify-center bg-white p-5">
         <div class="text-lg text-gray-500">
             Clique para abrir uma conversa
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

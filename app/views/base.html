@@ -1,23 +1,118 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="/auth/login">Login</a></li>
-            <li><a href="/auth/register">Registrar</a></li>
-            <li><a href="/usuarios/perfil">Perfil</a></li>
-            <li><a href="/criar_endereco">Endereços</a></li>
-            <li><a href="/entrar_categoria">Categorias</a></li>
-        </ul>
-    </nav>
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/app/static/style.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="favicon" href="/app/static/imgs/logo_mini.svg">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>ContrataPro</title>
+    <style>
+      /* CSS para o Header */
+      .menu-mobile {
+        display: none;
+      }
+      .menu-mobile.show {
+        display: block;
+      }
+      @media (max-width: 768px) {
+        .menu-desktop {
+          display: none;
+        }
+        .menu-mobile {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="flex items-center justify-between p-4 md:px-6">
+      <!-- Logo -->
+      <a href="/" class="flex items-center">
+        <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="h-8">
+      </a>
+      
+      <!-- Botão do Menu (Mobile) -->
+      <button id="menuToggle" class="md:hidden">
+        <img src="/app/static/imgs/list.svg" alt="Menu" class="w-8 h-8">
+      </button>
+      
+      <!-- Menu Desktop -->
+      <nav class="menu-desktop hidden md:flex items-center space-x-6">
+        <form action="/busca" method="get" class="flex items-center ">
+          <input
+            type="text"
+            name="b"
+            placeholder="Busque por prestadores"
+            class="p-2 border rounded-full bg-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-600"
+          />
+          <button type="submit" class="ml-2 px-4 py-2 border-2 border-teal-600 text-teal-600 rounded-full hover:bg-teal-600 hover:text-white transition">
+            Buscar
+          </button>
+        </form>
+        <a href="/favoritos" class="text-gray-700 hover:text-teal-600">
+          <img src="/app/static/imgs/star.svg" alt="Favoritos" class="w-6 h-6">
+        </a>
+        <a href="/chat" class="text-gray-700 hover:text-teal-600">
+          <img src="/app/static/imgs/chat.svg" alt="Chat" class="w-6 h-6">
+        </a>
+        <a href="/usuarios/{{user_id}}" class="text-gray-700 hover:text-teal-600">
+          <img src="/app/static/imgs/userC.svg" alt="Usuário" class="w-6 h-6">
+        </a>
+        <a href="/auth/logout" class="text-gray-700 hover:text-teal-600">
+          <img src="/app/static/imgs/sign-out.svg" alt="Logout" class="w-6 h-6">
+        </a>
+      </nav>
+
+      <!-- Menu Mobile -->
+      <nav id="menuMobile" class="menu-mobile absolute top-16 left-0 w-full bg-white shadow-lg z-10 p-4">
+        <form action="/busca" method="get" class="flex flex-col space-y-4">
+          <input
+            type="text"
+            name="b"
+            placeholder="Busque por prestadores"
+            class="p-2 border rounded-full bg-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-600"
+          />
+          <button type="submit" class="px-4 py-2 border-2 border-teal-600 text-teal-600 rounded-full hover:bg-teal-600 hover:text-white transition">
+            Buscar
+          </button>
+        </form>
+        <div class="flex flex-col items-start space-y-4 mt-4">
+          <a href="/favoritos" class="flex items-center space-x-2 text-gray-700 hover:text-teal-600">
+            <img src="/app/static/imgs/star.svg" alt="Favoritos" class="w-6 h-6">
+            <span>Favoritos</span>
+          </a>
+          <a href="/chat" class="flex items-center space-x-2 text-gray-700 hover:text-teal-600">
+            <img src="/app/static/imgs/chat.svg" alt="Chat" class="w-6 h-6">
+            <span>Chat</span>
+          </a>
+          <a href="/usuarios/{{user_id}}" class="flex items-center space-x-2 text-gray-700 hover:text-teal-600">
+            <img src="/app/static/imgs/userC.svg" alt="Usuário" class="w-6 h-6">
+            <span>Usuário</span>
+          </a>
+          <a href="/auth/logout" class="flex items-center space-x-2 text-gray-700 hover:text-teal-600">
+            <img src="/app/static/imgs/sign-out.svg" alt="Logout" class="w-6 h-6">
+            <span>Logout</span>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <!-- Script para funcionalidade do menu -->
+    <script>
+      const menuToggle = document.getElementById("menuToggle");
+      const menuMobile = document.getElementById("menuMobile");
+
+      menuToggle.addEventListener("click", () => {
+        menuMobile.classList.toggle("show");
+      });
+    </script>
+  </body>
 </html>

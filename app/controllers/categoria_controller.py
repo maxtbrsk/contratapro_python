@@ -20,9 +20,10 @@ def add_prest_catg(request: Request, categorias: list):
     return RedirectResponse(url="/home", status_code=303)
 
 def categories_page(request: Request, id:int):
+    user_id = get_current_user_id(request)
     if id.is_integer():
         if id:
             if verify_categoria(id):
                 users =  get_categoria_users(id)
                 categoria = get_categoria_by_id(id)
-                return templates.TemplateResponse("categoria/categoria.html", {"request": request, "users": users, "categoria": categoria})
+                return templates.TemplateResponse("categoria/categoria.html", {"request": request, "users": users, "categoria": categoria, "user_id": user_id})

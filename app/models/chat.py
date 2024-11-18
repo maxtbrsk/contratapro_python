@@ -103,3 +103,32 @@ def mark_messages_as_read(chat_id, user_id):
     db.execute(query, (chat_id, user_id))
     db.commit()
     db.close()
+    
+
+class ChatManager:
+    def __init__(self):
+        self.db = Database()
+
+    def get_chats(self, user_id):
+        query = """
+        SELECT c.id AS chat_id, 
+               CASE WHEN c.cliente_id = %(user_id)s THEN u2.nome_completo ELSE u1.nome_completo END AS outro_usuario_nome,
+               CASE WHEN c.cliente_id = %(user_id)s THEN u2.foto ELSE u1.foto END AS outro_usuario_foto,
+               (SELECT mensagem FROM mensagens WHERE conversa_id = c.id ORDER BY data_envio DESC LIMIT 1) AS ultima_mensagem,
+               (SELECT COUNT(*) FROM mensagens WHERE conversa_id = c.id AND usuario_id != %(user_id)s AND lida = 0) AS nao_lidas
+        FROM conversas c
+        JOIN usuarios u1 ON c.cliente_id = u1.id
+        JOIN usuarios u2 ON c.prestador_id = u2.id
+        WHERE c.cliente_id = %(user_id)s OR c.prestador_id = %(user_id)s
+        ORDER BY (SELECT data_envio FROM mensagens WHERE conversa_id = c.id ORDER BY data_envio DESC LIMIT 1) DESC
+        """
+        return self.db.execute(query, {"user_id": user_id}).fetchall()
+
+    def mark_messages_as_read(self, chat_id, user_id):
+        query = """
+        UPDATE mensagens 
+        SET lida = 1 
+        WHERE conversa_id = %(chat_id)s AND usuario_id != %(user_id)s
+        """
+        self.db.execute(query, {"chat_id": chat_id, "user_id": user_id})
+        self.db.commit()

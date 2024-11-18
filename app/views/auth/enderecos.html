@@ -1,3 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/app/static/style.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>ContrataPro</title>
+</head>
+<body>
+    <div class="flex">
+    <div class="bg-register w-2/5 text-white h-screen w-1/2 content-center justify-items-center hidden md:grid">
+        <h1 class="text-4xl font-semibold">Bem Vindo ao</h1>
+        <img src="/app/static/imgs/ContrataProW.svg" class="w-4/5" alt="ContrataPro">
+        <p class="text-xl mt-4">Encontre profissionais perto de você!</p>
+    </div>
+    <div class="w-full md:w-3/5 content-center justify-items-center h-1/2">
+        <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="w-2/5 mt-10 md:hidden">
+        <div class="w-4/5 content-center justify-items-center h-1/2 mt-6 md:mt-24">
+            <p class="text-2xl font-semibold mb-4">Entrar em sua conta</p>   
+                <form action="/auth/login" method="post" class="flex flex-col space-y-4 w-1/2">
+                    <input type="text" id="telefone" name="telefone" placeholder="Telefone" class="p-2 border border-gray-300 rounded">
+                    <input type="password" id="senha" name="senha" placeholder="Senha" required class="p-2 border border-gray-300 rounded">
+                    <button type="submit" class="bg-standard text-white text-xl font-semibold p-2 rounded">Entrar</button>
+                </form>   
+        </div>
+            <div class="w-3/5 content-center justify-items-center h-1/2 mt-6 md:mt-12">
+                <p class="text-2xl font-semibold my-6 ">Registre-se como:</p>
+                <div class="block md:flex">
+                    <a href="/auth/register/cliente" class="register-box pt-6 flex-wrap">
+                        <p>Cliente</p>
+                        <img src="/app/static/imgs/user.svg" class="w-user" alt="ícone de usuário">
+                    </a>
+                    <a href="/auth/register/prestador" class="register-box text-lg flex-wrap mt-12 md:m-0">
+                        <p>Prestador de serviço</p>
+                        <img src="/app/static/imgs/hammer.svg" class="w-1/2" alt="ícone de martelo">
+                    </a>
+                </div>
+            </div>
+    </div>
+    </div>
+</body>
+</html>
+
+
+
 <h2>Endereços</h2>
 
 <h3>Adicionar Novo Endereço</h3>
