@@ -4,27 +4,31 @@ import bcrypt
 from app.models.database import Database
 
 async def create_user(nome_completo, telefone, senha, cpf, tipo, cnpj=None, area_atuacao=None, descricao=None, curriculo=None, curriculo_filename=None, foto=None, foto_filename=None):
-    curriculo_dir = "app/static/curriculos"
-    foto_dir = "app/static/fotos"
+    curriculo_dir = "app/static/curriculos/"
+    foto_dir = "app/static/fotos/"
     os.makedirs(curriculo_dir, exist_ok=True)
     os.makedirs(foto_dir, exist_ok=True)
     
     if not cnpj:
         cnpj = None
         
-    foto_tipo = os.path.splitext(foto_filename)[1]
+    foto_tipo = os.path.splitext(foto_filename)[1] if foto_filename else ''
     
-    curriculo_hash = bcrypt.hashpw(curriculo_filename.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    foto_hash = bcrypt.hashpw(foto_filename.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    foto_hash = bcrypt.hashpw(foto_filename.encode('utf-8'), bcrypt.gensalt()).decode('utf-8') + foto_tipo if foto_filename else None
     
-    foto_hash += foto_tipo
-    curriculo_hash += ".pdf"
-
-    # Save the files
-    with open(os.path.join(curriculo_dir, curriculo_hash), "wb") as f:
-        f.write(curriculo)
-    with open(os.path.join(foto_dir, foto_hash), "wb") as f:
-        f.write(foto)
+    if curriculo and curriculo_filename:
+        curriculo_hash = bcrypt.hashpw(curriculo_filename.encode('utf-8'), bcrypt.gensalt()).decode('utf-8') + ".pdf"
+        with open(os.path.join(curriculo_dir, curriculo_hash), "wb") as f:
+            f.write(curriculo)
+    else:
+        curriculo_hash = None
+    
+    if foto and foto_filename:
+        with open(os.path.join(foto_dir, foto_hash), "wb") as f:
+            f.write(foto)
+    else:
+        foto_hash = None
+    
     db = Database()
     query = """
         INSERT INTO usuarios (nome_completo, telefone, senha, cpf, tipo, cnpj, area_atuacao, descricao, curriculo, foto)
@@ -36,10 +40,8 @@ async def create_user(nome_completo, telefone, senha, cpf, tipo, cnpj=None, area
     query = "SELECT id FROM usuarios WHERE telefone = %s ORDER BY id DESC LIMIT 1"
     db.execute(query, (telefone,))
     result = db.cursor.fetchone()
-    user_id = result['id']
-    
     db.close()
-    return user_id
+    return result['id'] if result else None
 
 def get_user_by_telefone(telefone):
     db = Database()

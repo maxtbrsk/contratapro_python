@@ -19,4 +19,4 @@ async def add_prest_catg_route(request: Request, categorias: list = Form(..., al
 
 @router.get("/categoria", response_class=HTMLResponse)
 async def categories_page_route(request: Request, id:int):
-    return await categories_page(request, id)
+    return categories_page(request, id)
