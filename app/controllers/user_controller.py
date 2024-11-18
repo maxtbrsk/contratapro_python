@@ -15,8 +15,6 @@ load_dotenv()
 SECRET_KEY = os.getenv("SECRET")
 ALGORITHM = "HS256"
 
-router = APIRouter()
-
 # Função pra obter o ID do usuário autenticado a partir do token JWT
 def get_current_user_id(request: Request):
     user_id = request.cookies.get("access_token")    
@@ -100,4 +98,5 @@ def user_profile(request: Request, user_id: int):
         return templates.TemplateResponse("user/my_profile.html", {"request": request, "user": user})
     if not user:
         return templates.TemplateResponse("user/non_existing.html", {"request": request})
+    print(user)
     return templates.TemplateResponse("user/profile.html", {"request": request, "user": user})

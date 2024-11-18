@@ -272,3 +272,33 @@ def search_users(term):
         
     db.close()
     return users
+
+def add_favorite(cliente_id, prestador_id):
+    from app.models.database import Database
+    db = Database()
+    query = "INSERT INTO favoritos (cliente_id, prestador_id) VALUES (%s, %s)"
+    db.execute(query, (cliente_id, prestador_id))
+    db.commit()
+    db.close()
+
+def remove_favorite(cliente_id, prestador_id):
+    from app.models.database import Database
+    db = Database()
+    query = "DELETE FROM favoritos WHERE cliente_id = %s AND prestador_id = %s"
+    db.execute(query, (cliente_id, prestador_id))
+    db.commit()
+    db.close()
+
+def get_favorites(cliente_id):
+    from app.models.database import Database
+    db = Database()
+    query = """
+        SELECT u.*
+        FROM favoritos f
+        JOIN usuarios u ON f.prestador_id = u.id
+        WHERE f.cliente_id = %s
+    """
+    db.execute(query, (cliente_id,))
+    favoritos = db.cursor.fetchall()
+    db.close()
+    return favoritos

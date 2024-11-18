@@ -1,0 +1,24 @@
+<!-- app/views/user/favorites.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Meus Favoritos</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Usuários Favoritados</h1>
+    <ul>
+        {% for user in favoritos %}
+            <li>
+                <img src="/app/static/fotos/{{ user.foto }}" alt="{{ user.nome_completo }}" class="w-12 h-12 rounded-full">
+                <span>{{ user.nome_completo }}</span>
+                <form action="/desfavoritar/{{user.id}}" method="post" style="display:inline;">
+                    <input type="hidden" name="prestador_id" value="{{ user.id }}">
+                    <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded">Desfavoritar</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

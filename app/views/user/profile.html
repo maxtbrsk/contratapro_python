@@ -44,11 +44,17 @@
             </div>
 
             <div class="flex space-x-4">
-                <form action="/favoritar/{{ user.id }}" method="post">
-                    <button type="submit" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                        <img src="/app/static/imgs/star.svg" alt="Favoritar" class="w-6 h-6">
-                    </button>
-                </form>
+                {% if user.id in favoritos_ids %}
+                    <form action="/desfavoritar/{{user.id}}" method="post">
+                        <input type="hidden" name="prestador_id" value="{{ user.id }}">
+                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Desfavoritar</button>
+                    </form>
+                {% else %}
+                    <form action="/favoritar/{{user.id}}" method="post">
+                        <input type="hidden" name="prestador_id" value="{{ user.id }}">
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Favoritar</button>
+                    </form>
+                {% endif %}
                 <form action="/chat/{{ user.id }}" method="post">
                     <button type="submit" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
                         <img src="/app/static/imgs/chat.svg" alt="Conversa" class="w-6 h-6">
