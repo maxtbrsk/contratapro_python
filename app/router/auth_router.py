@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, Request, UploadFile, File
 from fastapi.responses import HTMLResponse
-from app.controllers.auth_controller import register_cliente_page, register_user, login_user, logout_user, register_page, login_page, categorias_page, enderecos_page
+from app.controllers.auth_controller import register_cliente_page, register_user, login_user, logout_user, register_page, login_page, categorias_select, enderecos_page
 from fastapi.responses import RedirectResponse
 
 router = APIRouter()
@@ -52,9 +52,9 @@ async def login_route(request: Request):
             return RedirectResponse(url="/home")
     return login_page(request)
 
-@router.get("/categorias", response_class=HTMLResponse)
+@router.get("/selecionar_categorias", response_class=HTMLResponse)
 async def categorias_route(request: Request):
-    return categorias_page(request)
+    return categorias_select(request)
 
 @router.get("/criar_endereco", response_class=HTMLResponse)
 async def enderecos_route(request: Request):

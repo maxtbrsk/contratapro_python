@@ -14,7 +14,6 @@ async def add_prest_catg_route(request: Request, categorias: list = Form(..., al
     user_id = get_current_user_id(request)
     for categoria in categorias:
         relate_user_to_categoria(prestador_id=user_id, categoria_id=categoria)
-        print(categoria)
     return add_prest_catg(request, categorias)
 
 @router.get("/categoria", response_class=HTMLResponse)

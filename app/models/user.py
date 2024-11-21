@@ -1,7 +1,11 @@
-import os
+import os, re
+
 
 import bcrypt
 from app.models.database import Database
+
+def sanitize_filename(filename):
+        return re.sub(r'[^a-zA-Z0-9&%$]', '', filename)
 
 async def create_user(nome_completo, telefone, senha, cpf, tipo, cnpj=None, area_atuacao=None, descricao=None, curriculo=None, curriculo_filename=None, foto=None, foto_filename=None):
     curriculo_dir = "app/static/curriculos/"
@@ -14,10 +18,12 @@ async def create_user(nome_completo, telefone, senha, cpf, tipo, cnpj=None, area
         
     foto_tipo = os.path.splitext(foto_filename)[1] if foto_filename else ''
     
-    foto_hash = bcrypt.hashpw(foto_filename.encode('utf-8'), bcrypt.gensalt()).decode('utf-8') + foto_tipo if foto_filename else None
+    foto_hash = bcrypt.hashpw(sanitize_filename(foto_filename).encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    foto_hash = sanitize_filename(foto_hash) + foto_tipo if foto_filename else None
     
     if curriculo and curriculo_filename:
-        curriculo_hash = bcrypt.hashpw(curriculo_filename.encode('utf-8'), bcrypt.gensalt()).decode('utf-8') + ".pdf"
+        curriculo_hash = bcrypt.hashpw(sanitize_filename(curriculo_filename).encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+        curriculo_hash = sanitize_filename(curriculo_hash) + ".pdf"
         with open(os.path.join(curriculo_dir, curriculo_hash), "wb") as f:
             f.write(curriculo)
     else:
@@ -47,6 +53,22 @@ def get_user_by_telefone(telefone):
     db = Database()
     query = "SELECT * FROM usuarios WHERE telefone = %s"
     db.execute(query, (telefone,))
+    user = db.cursor.fetchone()
+    db.close()
+    return user
+
+def get_user_by_cpf(cpf):
+    db = Database()
+    query = "SELECT * FROM usuarios WHERE cpf = %s"
+    db.execute(query, (cpf,))
+    user = db.cursor.fetchone()
+    db.close()
+    return user
+
+def get_user_by_cnpj(cnpj):
+    db = Database()
+    query = "SELECT * FROM usuarios WHERE cnpj = %s"
+    db.execute(query, (cnpj,))
     user = db.cursor.fetchone()
     db.close()
     return user
@@ -329,3 +351,19 @@ def get_favorites(cliente_id: int):
     print(favoritos)
     db.close()
     return favoritos
+
+def add_evaluation(cliente_id, prestador_id, nota):
+    db = Database()
+    query = "SELECT * FROM avaliacoes WHERE cliente_id = %s AND prestador_id = %s"
+    db.execute(query, (cliente_id, prestador_id))
+    avaliacao = db.cursor.fetchone()
+    
+    if avaliacao:
+        query = "UPDATE avaliacoes SET nota = %s WHERE cliente_id = %s AND prestador_id = %s"
+        db.execute(query, (nota, cliente_id, prestador_id))
+    else:
+        query = "INSERT INTO avaliacoes (cliente_id, prestador_id, nota) VALUES (%s, %s, %s)"
+        db.execute(query, (cliente_id, prestador_id, nota))
+    
+    db.commit()
+    db.close()

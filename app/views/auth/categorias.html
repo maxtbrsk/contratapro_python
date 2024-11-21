@@ -1,50 +1,34 @@
-<h3>Relacionar Categoria ao Prestador</h3>
-<form action="/categorias" method="POST">
-    <label>
-        <input type="checkbox" name="categorias[]" value=1>
-        Encanador
-    </label><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/app/static/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Selecionar Categorias</title>
+</head>
+<body class="bg-gray-100 h-screen flex justify-center items-center">
+    <div class="bg-register w-2/6 text-white h-screen content-center justify-items-center hidden md:grid">
+        <img src="/app/static/imgs/broom.svg" class="w-3/12 mt-10" alt="Ícone de Vassoura">
+        <h1 class="text-xl font-semibold w-2/3 text-center mt-6">Selecione suas categorias</h1>
+    </div>
 
-    <label>
-        <input type="checkbox" name="categorias[]" value=2>
-        Eletricista
-    </label><br>
-
-    <label>
-        <input type="checkbox" name="categorias[]" value=3>
-        Pintor
-    </label><br>
-
-    <label>
-        <input type="checkbox" name="categorias[]" value=4>
-        Jardineiro
-    </label><br>
-
-    <label>
-        <input type="checkbox" name="categorias[]" value=5>
-        Pedreiro
-    </label><br>
-
-    <label>
-        <input type="checkbox" name="categorias[]" value=6>
-        Babá
-    </label><br>
-
-    <label>
-        <input type="checkbox" name="categorias[]" value=7>
-        Diarista
-    </label><br>
-
-    <label>
-        <input type="checkbox" name="categorias[]" value=8>
-        Marceneiro
-    </label><br>
-
-    <label>
-        <input type="checkbox" name="categorias[]" value=9>
-        Instalador de Ar Condicionado
-    </label><br>
-
-    <button type="submit">Enviar</button>
-</form>>
-
+    <div class="content-center justify-items-center w-full md:w-4/6">
+        <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="w-2/5 my-12 md:hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for categoria in categorias %}
+            <label class="flex items-center space-x-3">
+            <input type="checkbox" name="categorias[]" value="{{ categoria.id }}" class="w-4 h-4 text-teal-600 border-teal-600 rounded focus:ring-teal-500 bg-gray-200">
+            <span class="text-xl">{{ categoria.nome }}</span>
+            </label>
+            {% endfor %}
+        </div>
+        <form action="/categorias" method="POST" class="space-y-4 w-1/3">
+            <div class="flex justify-center mt-4">
+                <button type="submit" class="bg-teal-600 text-white text-xl font-semibold p-2 m-4 w-full rounded hover:bg-teal-700 transition duration-300">Enviar</button>
+            </div>
+        </form>
+    </div>
+    
+</body>
+</html>

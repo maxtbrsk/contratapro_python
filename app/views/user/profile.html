@@ -1,16 +1,23 @@
 {% extends "base.html" %} {% block content %} {% if user.nome_completo is not
 none %}
-<div class="max-w-2xl mx-auto p-6">
+<div class="max-w-screen md:max-w-2xl mx-auto p-6">
   <div class="mb-8 flex flex-col md:flex-row justify-between">
     <div class=" flex flex-col md:flex-row">
       <img
         src="/app/static/fotos/{{ user.foto }}"
         alt="Foto do Usuário"
-        class="w-32 h-32 object-cover rounded-xl shadow-md"
+        class="w-32 mb-8 md:mb-0 h-32 object-cover rounded-xl shadow-md"
       />
-      <div class="ml-8">
+      <div class="md:ml-8">
         <p class="font-bold text-3xl">{{ user.nome_completo }}</p>
-        <div class="flex items-center mt-2"><img class="mr-2 " src="/app/static/imgs/star.svg" alt=""> <strong>{{user.media_avaliacao}}</strong> </div>
+        <div class="flex items-center mt-2">
+          <img src="/app/static/imgs/star.svg" alt="estrela" class="mr-2" />
+          {% if user.media_avaliacao == 0.0 %}
+          <span>Sem avaliações</span>
+          {% else %}
+          <span>{{ user.media_avaliacao }}</span>
+          {% endif %}
+        </div>
         <div class="flex">
           {% for categoria in user.categorias %}
           <p class="text-lg mt-2 mr-2">{{ categoria.categoria_nome }},</p>
@@ -20,7 +27,7 @@ none %}
       </div>
     </div>
 
-    <div class="flex items-center">
+    <div class="flex ml-[-20px] items-center">
       {% if user.id in favoritos_ids %}
       <form action="/desfavoritar/{{user.id}}" method="post">
         <input type="hidden" name="prestador_id" value="{{ user.id }}" />
@@ -77,10 +84,100 @@ none %}
     <h2 class="text-xl font-semibold mb-4">Currículo</h2>
     <a
       href="/app/static/curriculos/{{ user.curriculo }}"
-      class="inline-block bg-teal-600 font-semibold text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+      class="inline-block bg-teal-600 font-semibold text-white px-4 py-2 rounded no-underline hover:no-underline"
       download
       >Baixar Currículo</a
     >
+  </div>
+
+  <button
+    type="button"
+    class="px-4 py-2 rounded bg-teal-600 text-white font-semibold px-4 py-2 min-w-[14vw]"
+    data-toggle="modal"
+    data-target="#avaliarModal"
+  >
+    Avaliar
+  </button>
+
+  <!-- Evaluation Modal -->
+  <div
+    class="modal fade"
+    id="avaliarModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="avaliarModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form action="/avaliar/{{ user.id }}" method="post">
+          <div class="modal-header border-none">
+            <h1>De uma nota a esse prestador de serviços</h1>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Fechar"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <label for="nota">Nota:</label>
+            <div id="nota" class="space-x-2">
+                <label class="block ml-2">
+                <input type="radio" name="nota" value="1" required />
+                <span>1 <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" /></span>
+                </label>
+                <label class="block">
+                <input type="radio" name="nota" value="2" required />
+                <span>2 
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                </span>
+                </label>
+                <label class="block">
+                <input type="radio" name="nota" value="3" required />
+                <span>3 
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                </span>
+                </label>
+                <label class="block">
+                <input type="radio" name="nota" value="4" required />
+                <span>4 
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                </span>
+                </label>
+                <label class="block">
+                <input type="radio" name="nota" value="5" required />
+                <span>5 
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                  <img src="/app/static/imgs/star.svg" alt="estrela" class="inline w-4 h-4" />
+                </span>
+                </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary font-semibold"
+              data-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn bg-teal-600 text-white font-semibold">Enviar Avaliação</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
 {% else %}

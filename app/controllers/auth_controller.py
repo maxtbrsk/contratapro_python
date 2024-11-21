@@ -1,6 +1,7 @@
 from fastapi import Request, HTTPException, Form
 from fastapi.responses import JSONResponse, RedirectResponse
-from app.models.user import create_user, get_user_by_telefone
+from app.models.user import create_user, get_user_by_cnpj, get_user_by_cpf, get_user_by_telefone
+from app.models.categoria import get_all_categorias
 from passlib.hash import bcrypt
 from fastapi.templating import Jinja2Templates
 import os
@@ -30,6 +31,12 @@ async def register_user(
 ):
     if get_user_by_telefone(telefone):
         raise HTTPException(status_code=400, detail="Telefone já registrado")
+    
+    if get_user_by_cpf(cpf):
+        raise HTTPException(status_code=400, detail="CPF já registrado")
+    
+    if tipo == "prestador" and get_user_by_cnpj(cnpj):
+        raise HTTPException(status_code=400, detail="CNPJ já registrado")
     
     hashed_password = bcrypt.hash(senha)
     
@@ -71,6 +78,7 @@ def logout_user(request: Request):
     response.delete_cookie(key="access_token")
     return response
 
+
 def register_page(request: Request):
     return views.TemplateResponse("auth/register_prestador.html", {"request": request})
 
@@ -80,8 +88,10 @@ def register_cliente_page(request: Request):
 def login_page(request: Request):
     return views.TemplateResponse("auth/login.html", {"request": request})
 
-def categorias_page(request: Request):
-    return views.TemplateResponse("auth/categorias.html", {"request": request})
+def categorias_select(request: Request):
+    categorias = get_all_categorias()
+    print (categorias)
+    return views.TemplateResponse("auth/categorias.html", {"request": request, "categorias": categorias})
 
 def enderecos_page(request: Request):
     return views.TemplateResponse("auth/enderecos.html", {"request": request})

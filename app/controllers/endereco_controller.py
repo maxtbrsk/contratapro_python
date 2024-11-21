@@ -33,4 +33,4 @@ def add_endereco(
     if user_tipo == "cliente":
         return RedirectResponse(url="/home", status_code=303)
     
-    return RedirectResponse(url="/categorias", status_code=303)
+    return RedirectResponse(url="/selecionar_categorias", status_code=303)
