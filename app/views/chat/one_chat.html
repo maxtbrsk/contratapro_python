@@ -1,149 +1,186 @@
-  {% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-  <div class="flex h-[85vh]">
-    <div class="w-1/3 h-4/5 m-10 border-2 border-teal-600 rounded-xl overflow-y-auto ">
-        <p class="my-2 ml-4 font-semibold text-xl">Conversas</p>
-      {% for chat in chats %}
-      <a
-        href="/chat/{{ chat.id }}"
-        class="block {% if chat.id == conversa.id %}{% endif %} no-underline hover:no-underline"
-      >
-        <div
-          class="flex items-center p-4 hover:bg-gray-100 ease-in-out duration-200 cursor-pointer"
+<div class="flex flex-col md:flex-row px-12 h-[85vh]">
+    <!-- Toggle Button for Mobile -->
+    <button
+        id="toggleConversations"
+        class="block md:hidden w-full my-4 md:m-10 bg-teal-600 text-white p-2 rounded-xl"
+    >
+        Mostrar/Ocultar Conversas
+    </button>
+
+    <!-- Conversas -->
+    <div
+        id="conversationList"
+        class="w-full md:w-1/3 h-4/5 my-4 md:m-10 border-2 border-teal-600 rounded-xl overflow-y-auto bg-white"
+    >
+        <p class="my-2 ml-4 font-semibold text-lg md:text-xl">Conversas</p>
+        
+        {% for chat in chats %}
+        <a
+            href="/chat/{{ chat.id }}"
+            class="block {% if chat.id == conversa.id %}bg-gray-200{% endif %} no-underline hover:no-underline"
         >
-          <img
-            src="/app/static/fotos/{{ chat.outro_usuario_foto }}"
-            alt="{{ chat.outro_usuario_nome }}"
-            class="w-12 h-12 rounded-full mr-4"
-          />
-          <div class="flex-1">
-            <span class="text-gray-700 font-semibold"
-              >{{ chat.outro_usuario_nome }}</span
+            <div
+                class="flex items-center p-4 hover:bg-gray-100 ease-in-out duration-200 cursor-pointer"
             >
-            <p class="text-gray-500 text-sm truncate">
-              {{ chat.ultima_mensagem }}
-            </p>
-          </div>
-          {% if chat.nao_lidas > 0 %}
-          <span
-            class="ml-2 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs"
-          >
-            {{ chat.nao_lidas }}
-          </span>
-          {% endif %}
-        </div>
-      </a>
-      {% endfor %}
-    </div>
-    <div class="w-2/3 h-4/5 my-10 mr-10 border-2 border-teal-600 rounded-xl flex flex-col h-2/3 bg-white">
-        <a href="/chat" class="flex justify-end font-semibold m-4 no-underline hover:no-underline">X</a>
-      {% if conversa %}
-      <div id="chatBox" class="flex-1 p-4 overflow-y-auto">
-        {% for mensagem in conversa.mensagens %}
-        <div
-          class="flex {% if mensagem.usuario_id == user_id %}justify-end{% else %}justify-start{% endif %} mb-4"
-        >
-          <div
-            class="max-w-xs {% if mensagem.usuario_id == user_id %}bg-teal-500 text-white{% else %}bg-gray-200{% endif %} p-2 rounded"
-          >
-            <p>{{ mensagem.mensagem }}</p>
-          </div>
-        </div>
+                <img
+                    src="/app/static/fotos/{{ chat.outro_usuario_foto }}"
+                    alt="{{ chat.outro_usuario_nome }}"
+                    class="w-10 h-10 md:w-12 md:h-12 rounded-full mr-4"
+                />
+                <div class="flex-1">
+                    <span class="text-gray-700 font-semibold text-sm md:text-base">{{ chat.outro_usuario_nome }}</span>
+                    <p class="text-gray-500 text-xs md:text-sm truncate">
+                        {{ chat.ultima_mensagem }}
+                    </p>
+                </div>
+                {% if chat.nao_lidas > 0 %}
+                <span
+                    class="ml-2 bg-red-500 text-white rounded-full h-5 w-5 md:h-6 md:w-6 flex items-center justify-center text-xs"
+                >
+                    {{ chat.nao_lidas }}
+                </span>
+                {% endif %}
+            </div>
+        </a>
         {% endfor %}
-      </div>
-      <div class="p-4">
-        <form id="messageForm" class="flex">
-          <input
-            type="text"
-            id="messageInput"
-            class="flex-1 border rounded-xl p-2"
-            placeholder="Digite sua mensagem..."
-            required
-          />
-          <button
-            type="submit"
-            class="bg-teal-600 text-white px-4 py-2 rounded-xl ml-2"
-          >
-            Enviar
-          </button>
-        </form>
-      </div>
-      {% else %}
-      <div class="flex items-center justify-center h-full">
-        <div class="text-lg text-gray-500">Clique para abrir uma conversa</div>
-      </div>
-      {% endif %}
     </div>
 
-    <!-- Script JavaScript para WebSocket -->
-    <script>
-                       window.onload = function() {
-                      const chatBox = document.getElementById('chatBox');
-                      chatBox.scrollTop = chatBox.scrollHeight;
-                  };
-
-
-                      const userId = {{ user_id }};
-                      const chatId = {{ conversa.id }};
-                      const ws = new WebSocket(`ws://${window.location.host}/ws/chat/${chatId}`);
-
-                      ws.onopen = function() {
-                          fetch(`/chats/${chatId}/read`, {
-                          method: 'POST',
-                          headers: {'Content-Type': 'application/json'},
-                          body: JSON.stringify({ user_id: userId })
-                          });
-                      };
-
-                      ws.onmessage = function(event) {
-                          const data = JSON.parse(event.data);
-                          // Atualizar a área de chat com a nova mensagem
-                          const chatBox = document.getElementById('chatBox');
-                          const messageDiv = document.createElement('div');
-                          messageDiv.classList.add('flex', data.user_id === userId ? 'justify-end' : 'justify-start', 'mb-4');
-                          messageDiv.innerHTML = `
-                              <div class="max-w-xs ${data.user_id === userId ? 'bg-blue-500 text-white' : 'bg-gray-200'} p-2 rounded">
-                                  <p>${data.message}</p>
-                              </div>
-                          `;
-                          chatBox.appendChild(messageDiv);
-                          chatBox.scrollTop = chatBox.scrollHeight;
-                          updateChatList(data.chats);
-                      };
-
-                      document.getElementById('messageForm').addEventListener('submit', function(event) {
-                          event.preventDefault();
-                          const input = document.getElementById('messageInput');
-                          const message = input.value;
-                          ws.send(JSON.stringify({
-                              "user_id": userId,
-                              "message": message,
-                              "timestamp": new Date().toISOString()
-                          }));
-                          input.value = '';
-                      });
-
-
-                      function updateChatList(chats) {
-            const chatListContainer = document.querySelector(".chat-list");
-          chatListContainer.innerHTML = ""; // Limpa a lista atual
-          chats.forEach(chat => {
-              const chatElement = `
-                  <a href="/chat/${chat.id}" class="block ${chat.nao_lidas > 0 ? 'bg-gray-200' : ''}">
-                      <div class="flex items-center p-4 hover:bg-gray-100 border-b border-gray-200 cursor-pointer">
-                          <img src="/app/static/fotos/${chat.outro_usuario_foto}" alt="${chat.outro_usuario_nome}" class="w-12 h-12 rounded-full mr-4">
-                          <div class="flex-1">
-                              <span class="text-gray-700 font-semibold">${chat.outro_usuario_nome}</span>
-                              <p class="text-gray-500 text-sm truncate">${chat.ultima_mensagem}</p>
-                          </div>
-                          ${chat.nao_lidas > 0 ? `<span class="ml-2 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs">${chat.nao_lidas}</span>` : ""}
-                      </div>
-                  </a>
-              `;
-              chatListContainer.insertAdjacentHTML("beforeend", chatElement);
-          });
-      }
-    </script>
+    <!-- Chat -->
+    <div
+        class="w-full md:w-2/3 h-4/5 my-4 md:my-10 md:mr-10 border-2 border-teal-600 rounded-xl flex flex-col bg-white"
+    >
+        <a href="/chat" class="flex justify-end font-semibold m-4 text-gray-600 no-underline hover:no-underline">X</a>
+        {% if conversa %}
+        <div id="chatBox" class="flex-1 p-4 overflow-y-auto">
+            {% for mensagem in conversa.mensagens %}
+            <div
+                class="flex {% if mensagem.usuario_id == user_id %}justify-end{% else %}justify-start{% endif %} mb-4"
+            >
+                <div
+                    class="max-w-xs {% if mensagem.usuario_id == user_id %}bg-teal-500 text-white{% else %}bg-gray-200{% endif %} p-2 rounded"
+                >
+                    <p class="text-sm md:text-base">{{ mensagem.mensagem }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="p-2 overflow-auto flex items-end h-24">
+            <form id="messageForm" class="flex w-full">
+                <input
+                    type="text"
+                    id="messageInput"
+                    class=" border w-3/5 md:w-4/5 rounded-xl p-2 text-sm md:text-base"
+                    placeholder="Digite sua mensagem..."
+                    required
+                />
+                <button
+                    type="submit"
+                    class="bg-teal-600 w-2/5 md:w-1/5 text-white px-4 py-2 rounded-xl ml-2 text-sm md:text-base"
+                >
+                    Enviar
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <div class="flex items-center justify-center h-full">
+            <div class="text-sm md:text-lg text-gray-500">Clique para abrir uma conversa</div>
+        </div>
+        {% endif %}
     </div>
+</div>
+
+<script>
+    window.onload = function () {
+        const chatBox = document.getElementById('chatBox');
+        if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    const userId = {{ user_id }};
+    const chatId = {{ conversa.id }};
+    const ws = new WebSocket(`ws://${window.location.host}/ws/chat/${chatId}`);
+
+    ws.onopen = function () {
+        fetch(`/chats/${chatId}/read`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId }),
+        });
+    };
+
+    ws.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        const chatBox = document.getElementById('chatBox');
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add(
+            'flex',
+            data.user_id === userId ? 'justify-end' : 'justify-start',
+            'mb-4'
+        );
+        messageDiv.innerHTML = `
+            <div class="max-w-xs ${
+                data.user_id === userId ? 'bg-teal-500 text-white' : 'bg-gray-200'
+            } p-2 rounded">
+                <p class="text-sm md:text-base">${data.message}</p>
+            </div>
+        `;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        updateChatList(data.chats);
+    };
+
+    document.getElementById('messageForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const input = document.getElementById('messageInput');
+        const message = input.value;
+        ws.send(
+            JSON.stringify({
+                user_id: userId,
+                message: message,
+                timestamp: new Date().toISOString(),
+            })
+        );
+        input.value = '';
+    });
+
+    function updateChatList(chats) {
+        const chatListContainer = document.querySelector('.chat-list');
+        chatListContainer.innerHTML = '';
+        chats.forEach((chat) => {
+            const chatElement = `
+                <a href="/chat/${chat.id}" class="block ${chat.nao_lidas > 0 ? 'bg-gray-200' : ''}">
+                    <div class="flex items-center p-4 hover:bg-gray-100 border-b border-gray-200 cursor-pointer">
+                        <img src="/app/static/fotos/${chat.outro_usuario_foto}" alt="${chat.outro_usuario_nome}" class="w-10 h-10 md:w-12 md:h-12 rounded-full mr-4">
+                        <div class="flex-1">
+                            <span class="text-gray-700 font-semibold">${chat.outro_usuario_nome}</span>
+                            <p class="text-gray-500 text-sm truncate">${chat.ultima_mensagem}</p>
+                        </div>
+                        ${
+                            chat.nao_lidas > 0
+                                ? `<span class="ml-2 bg-red-500 text-white rounded-full h-5 w-5 md:h-6 md:w-6 flex items-center justify-center text-xs">${chat.nao_lidas}</span>`
+                                : ''
+                        }
+                    </div>
+                </a>
+            `;
+            chatListContainer.insertAdjacentHTML('beforeend', chatElement);
+        });
+    }
+
+    // Toggle conversation list visibility on mobile
+    document.getElementById('toggleConversations').addEventListener('click', function() {
+        const conversationList = document.getElementById('conversationList');
+        conversationList.classList.toggle('hidden');
+    });
+
+    // Ensure conversation list is visible when screen size is medium or larger
+    window.addEventListener('resize', function() {
+        const conversationList = document.getElementById('conversationList');
+        if (window.innerWidth >= 768) { // 768px is the md breakpoint in Tailwind CSS
+            conversationList.classList.remove('hidden');
+        }
+    });
+</script>
 {% endblock %}

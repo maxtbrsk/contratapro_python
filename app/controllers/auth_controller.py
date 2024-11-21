@@ -32,12 +32,6 @@ async def register_user(
     if get_user_by_telefone(telefone):
         raise HTTPException(status_code=400, detail="Telefone já registrado")
     
-    if get_user_by_cpf(cpf):
-        raise HTTPException(status_code=400, detail="CPF já registrado")
-    
-    if tipo == "prestador" and get_user_by_cnpj(cnpj):
-        raise HTTPException(status_code=400, detail="CNPJ já registrado")
-    
     hashed_password = bcrypt.hash(senha)
     
     user_id = await create_user(

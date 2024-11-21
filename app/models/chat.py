@@ -77,7 +77,8 @@ def get_chat_by_id(chat_id, user_id):
     mensagens = db.cursor.fetchall()
     for mensagem in mensagens:
         mensagem['usuario_id'] = int(mensagem['usuario_id'])
-    conversa['mensagens'] = mensagens
+    if conversa:
+        conversa['mensagens'] = mensagens
     db.close()
     return conversa
 

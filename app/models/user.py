@@ -12,9 +12,6 @@ async def create_user(nome_completo, telefone, senha, cpf, tipo, cnpj=None, area
     foto_dir = "app/static/fotos/"
     os.makedirs(curriculo_dir, exist_ok=True)
     os.makedirs(foto_dir, exist_ok=True)
-    
-    if not cnpj:
-        cnpj = None
         
     foto_tipo = os.path.splitext(foto_filename)[1] if foto_filename else ''
     
@@ -148,7 +145,7 @@ async def update_user_full(user_id, **kwargs):
         foto_filename = kwargs['foto_filename']
         foto_tipo = os.path.splitext(foto_filename)[1]
         foto_hash = bcrypt.hashpw(foto_filename.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-        foto_hash += foto_tipo
+        foto_hash = sanitize_filename(foto_hash) + foto_tipo
         
         with open(os.path.join(foto_dir, foto_hash), "wb") as f:
             f.write(foto)
@@ -160,9 +157,9 @@ async def update_user_full(user_id, **kwargs):
     
     if 'curriculo' in kwargs and 'curriculo_filename' in kwargs:
         curriculo = kwargs['curriculo']
-        curriculo_filename = kwargs['curriculo_filename']
+        curriculo_filename = sanitize_filename(kwargs['curriculo_filename'])
         curriculo_hash = bcrypt.hashpw(curriculo_filename.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-        curriculo_hash += ".pdf"
+        curriculo_hash = sanitize_filename(curriculo_hash) + ".pdf"
         
         with open(os.path.join(curriculo_dir, curriculo_hash), "wb") as f:
             f.write(curriculo)

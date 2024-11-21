@@ -9,57 +9,85 @@
     <title>Registre-se como Prestador de serviço</title>
 </head>
 
-<body class="max-h-[100vh]">
-    <div class="flex">
-        <div class="bg-register w-2/6 text-white h-screen content-center justify-items-center hidden md:grid">
-            <img src="/app/static/imgs/hammerW.svg" class="w-3/12" alt="Martelo">
-            <h1 class="text-2xl font-semibold w-2/3 text-center mt-6">Faça seu cadastro como prestador de serviço</h1>
+<body class="min-h-screen max-w-screen bg-gray-100">
+    <div class="flex flex-col md:flex-row">
+        <!-- Left Section -->
+        <div class="bg-register w-full md:w-2/6 text-white h-64 md:h-screen flex flex-col items-center justify-center hidden md:flex">
+            <img src="/app/static/imgs/hammerW.svg" class="w-16 md:w-3/12" alt="Martelo">
+            <h1 class="text-lg md:text-2xl font-semibold text-center mt-4 md:mt-6 px-4">
+                Faça seu cadastro como prestador de serviço
+            </h1>
         </div>
-        <div class="content-center justify-items-center md:w-4/6">
-            <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="flex justify-center my-12 w-2/5 mt-10 md:hidden">
-            <form action="/auth/register" method="post" enctype="multipart/form-data" class="w-8/12">
-                <div class="md:grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="grid grid-rows-1">
+
+        <!-- Right Section -->
+        <div class="w-full md:w-4/6 flex flex-col items-center bg-white p-6 md:p-12">
+            <img src="/app/static/imgs/ContrataPro.svg" alt="ContrataPro" class="my-6 w-2/5 md:hidden">
+            <form action="/auth/register" method="post" enctype="multipart/form-data" class="w-full md:w-8/12">
+                <!-- Inputs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-col">
                         <input type="text" id="nome_completo" name="nome_completo" required placeholder="Nome"
-                        class="m-2 p-2 border border-gray-300 rounded">
+                            class="m-2 p-2 border border-gray-300 rounded w-full">
                         <input type="text" id="telefone" name="telefone" required placeholder="Telefone"
-                        class="m-2 p-2 border border-gray-300 rounded">
+                            class="m-2 p-2 border border-gray-300 rounded w-full">
                         <input type="password" id="senha" name="senha" required placeholder="Senha"
-                        class="m-2 p-2 border border-gray-300 rounded">
+                            class="m-2 p-2 border border-gray-300 rounded w-full">
                     </div>
-                    <div class="grid grid-rows-1">
+                    <div class="flex flex-col">
                         <input type="text" id="cpf" name="cpf" required placeholder="CPF"
-                        class="m-2 p-2 border border-gray-300 rounded">
-                        <input type="text" id="cnpj" name="cnpj" placeholder="CNPJ"
-                        class="m-2 p-2 border border-gray-300 rounded">
-                        <input type="text" id="area_atuacao" name="area_atuacao" placeholder="Área de Atuação"
-                        class="m-2 p-2 border border-gray-300 rounded">
+                            class="m-2 p-2 border border-gray-300 rounded w-full">
+                        <input type="text" id="cnpj" name="cnpj" placeholder="CNPJ (Opcional)"
+                            class="m-2 p-2 border border-gray-300 rounded w-full">
                     </div>
                 </div>
-                <div class="w-full">
+
+                <!-- Textarea -->
+                <div>
                     <textarea id="descricao" name="descricao" placeholder="Descrição"
-                    class="md:w-full m-2 p-2 border border-gray-300 rounded"></textarea>
+                        class="w-full m-2 p-2 border border-gray-300 rounded"></textarea>
                 </div>
-                <div class="flex-wrap justify-items-center">
-                    <div class="flex justify-between w-11/12">
-                        <label for="curriculo" class="mt-2 font-semibold">Currículo (PDF):</label>
+
+                <!-- File Uploads -->
+                <div class="flex flex-wrap justify-center gap-4">
+                    <div class="flex flex-col md:flex-row items-center w-full">
+                        <label for="curriculo" class="text-sm md:text-base font-semibold md:w-2/5">Currículo (PDF):</label>
                         <input type="file" id="curriculo" name="curriculo" accept="application/pdf"
-                            placeholder="Currículo" class="m-2 p-2 w-2/3">
+                            class="m-2 p-2 border rounded md:w-3/5" onchange="handleFileSelect('curriculo')">
+                        <span id="curriculo-selected" class="invisible text-sm text-green-600 m-2">Currículo selecionado</span>
                     </div>
-                    <div class="flex justify-between w-11/12">
-                        <label for="foto" class="font-semibold">Foto de perfil:</label>
-                        <input type="file" id="foto" name="foto" accept="image/*" required placeholder="Foto de perfil"
-                            class="m-2 p-2 w-2/3">
+                    <div class="flex flex-col md:flex-row items-center w-full">
+                        <label for="foto" class="text-sm md:text-base font-semibold md:w-2/5">Foto de perfil:</label>
+                        <input type="file" id="foto" name="foto" accept="image/*" required
+                            class="m-2 p-2 border rounded md:w-3/5" onchange="handleFileSelect('foto')">
+                        <span id="foto-selected" class="invisible text-sm text-green-600 m-2">Foto selecionada</span>
                     </div>
-                    <div class="flex justify-center">
-                        <input type="text" id="tipo" name="tipo" value="prestador" class="hidden">
-                        <button type="submit"
-                            class="text-white bg-teal-600 text-xl font-semibold px-4 py-2 w-64 mt-6 rounded hover:bg-teal-700 transition duration-300">Registrar</button>
-                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-center mt-6">
+                    <input type="text" id="tipo" name="tipo" value="prestador" class="hidden">
+                    <button type="submit"
+                        class="text-white bg-teal-600 text-lg font-semibold px-6 py-2 rounded hover:bg-teal-700 transition duration-300">
+                        Registrar
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        function handleFileSelect(id) {
+            const fileInput = document.getElementById(id);
+            const selectedMessage = document.getElementById(id + '-selected');
+            if (fileInput.files.length > 0) {
+                fileInput.classList.add('invisible');
+                selectedMessage.classList.remove('invisible');
+            } else {
+                fileInput.classList.remove('invisible');
+                selectedMessage.classList.add('invisible');
+            }
+        }
+    </script>
 </body>
 
 </html>
