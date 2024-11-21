@@ -4,7 +4,7 @@ WORKDIR /contratapro_python
 
 COPY requirements.txt /contratapro_python/
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt uvicorn[standard]
 
 COPY . /contratapro_python
 

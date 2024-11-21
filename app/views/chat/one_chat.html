@@ -101,8 +101,9 @@
     const userId = {{ user_id }};
     {% if conversa %}
     const chatId = {{ conversa.id }};
-    const ws = new WebSocket(`ws://${window.location.host}/ws/chat/${chatId}`);
-    const notificationsWs = new WebSocket(`ws://${window.location.host}/ws/notifications/${userId}`);
+    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    const ws = new WebSocket(`wss://${window.location.host}/ws/chat/${chatId}`);
+    const notificationsWs = new WebSocket(`wss://${window.location.host}/ws/notifications/${userId}`);
     {% endif %}
 
     {% if conversa %}

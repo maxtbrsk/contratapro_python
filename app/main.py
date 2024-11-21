@@ -16,7 +16,10 @@ app = FastAPI()
 # Configuração de CORS (opcional, caso você precise habilitar o acesso de diferentes domínios)
 origins = [
     "http://localhost",
-    "http://localhost:8000",  # Front-end local
+    "http://localhost:8000", 
+    "https://contratapro.com",
+    "https://contratapro.fly.dev"
+    # Front-end local
 ]
 
 app.add_middleware(
@@ -44,13 +47,14 @@ active_connections: Dict[int, List[WebSocket]] = {}
 # Function to manage new connections
 async def connect(websocket: WebSocket, chat_id: int):
     await websocket.accept()
+    print(f"WebSocket connected for chat_id: {chat_id}")
     if chat_id not in active_connections:
         active_connections[chat_id] = []
     active_connections[chat_id].append(websocket)
 
-# Function to handle disconnections
 async def disconnect(websocket: WebSocket, chat_id: int):
     active_connections[chat_id].remove(websocket)
+    print(f"WebSocket disconnected for chat_id: {chat_id}")
     if not active_connections[chat_id]:
         del active_connections[chat_id]
 

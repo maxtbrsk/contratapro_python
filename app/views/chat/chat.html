@@ -58,7 +58,8 @@
     };
 
     const userId = {{ user_id }};
-    const ws = new WebSocket(`ws://${window.location.host}/ws/notifications/${userId}`);
+    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    const ws = new WebSocket(`${protocol}${window.location.host}/ws/chat/${chatId}`);
 
     ws.onmessage = function(event) {
         const data = JSON.parse(event.data);
