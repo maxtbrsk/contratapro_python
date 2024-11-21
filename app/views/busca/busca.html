@@ -5,7 +5,7 @@
 <h1 class="text-3xl font-bold m-8 md:my-12 md:mx-24">Resultados da busca: {{busca}}</h1>
     <div class="mx-8 md:mx-24 grid grid-cols-1 md:grid-cols-2 gap-8">
       {% for user in users %}
-      <a class="flex items-center p-6 hover:bg-gray-100 rounded-xl transition" href="/usuarios/{{user.prestador_id}}">
+      <a class="flex items-center p-6 hover:bg-gray-100 rounded-xl transition" href="/usuarios/{{user.id}}">
         <div class="w-32 h-32 flex-shrink-0">
             <img
             src="/app/static/fotos/{{ user.foto }}"

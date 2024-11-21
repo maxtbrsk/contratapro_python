@@ -21,4 +21,5 @@ async def home_page(request: Request):
 def search_page(request: Request, b: str):
     user_id = get_current_user_id(request)
     users = search_users(b)
+    print(users)
     return views.TemplateResponse("busca/busca.html", {"request": request, "users": users, "busca": b, "user_id": user_id})
