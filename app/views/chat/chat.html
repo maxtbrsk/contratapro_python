@@ -2,39 +2,115 @@
 
 {% block content %}
 <div class="flex flex-col md:flex-row px-12 h-[85vh]">
+  <!-- Toggle Button for Mobile -->
+  <button
+      id="toggleConversations"
+      class="block md:hidden w-full my-4 md:m-10 bg-teal-600 text-white p-2 rounded-xl"
+  >
+      Mostrar/Ocultar Conversas
+  </button>
+
   <!-- Conversas -->
-  <div class="w-full md:w-1/3 h-4/5 my-4 md:m-10 border-2 border-teal-600 rounded-xl overflow-y-auto bg-white">
-    <p class="my-2 ml-4 font-semibold text-lg md:text-xl">Conversas</p>
-    {% for chat in chats %}
-    <a href="/chat/{{ chat.id }}" class="block no-underline hover:no-underline">
-      <div class="flex items-center p-4 hover:bg-gray-100 ease-in-out duration-200 cursor-pointer">
-        <img
-          src="/app/static/fotos/{{ chat.outro_usuario_foto }}"
-          alt="{{ chat.outro_usuario_nome }}"
-          class="w-10 h-10 md:w-12 md:h-12 rounded-full mr-4"
-        />
-        <div class="flex-1">
-          <span class="text-gray-700 font-semibold text-sm md:text-base">{{ chat.outro_usuario_nome }}</span>
-          <p class="text-gray-500 text-xs md:text-sm truncate">{{ chat.ultima_mensagem }}</p>
+  <div
+      id="conversationList"
+      class="w-full md:w-1/3 h-4/5 my-4 md:m-10 border-2 border-teal-600 rounded-xl overflow-y-auto bg-white"
+  >
+      <p class="my-2 ml-4 font-semibold text-lg md:text-xl">Conversas</p>
+      {% for chat in chats %}
+      <a href="/chat/{{ chat.id }}" class="block no-underline hover:no-underline">
+        <div class="flex items-center p-4 hover:bg-gray-100 ease-in-out duration-200 cursor-pointer">
+          <img
+            src="/app/static/fotos/{{ chat.outro_usuario_foto }}"
+            alt="{{ chat.outro_usuario_nome }}"
+            class="w-10 h-10 md:w-12 md:h-12 rounded-full mr-4"
+          />
+          <div class="flex-1">
+            <span class="text-gray-700 font-semibold text-sm md:text-base">{{ chat.outro_usuario_nome }}</span>
+            <p class="text-gray-500 text-xs md:text-sm truncate">{{ chat.ultima_mensagem }}</p>
+          </div>
+          {% if chat.nao_lidas > 0 %}
+          <span
+            class="ml-2 bg-red-500 text-white rounded-full h-5 w-5 md:h-6 md:w-6 flex items-center justify-center text-xs">
+            {{ chat.nao_lidas }}
+          </span>
+          {% endif %}
         </div>
-        {% if chat.nao_lidas > 0 %}
-        <span
-          class="ml-2 bg-red-500 text-white rounded-full h-5 w-5 md:h-6 md:w-6 flex items-center justify-center text-xs">
-          {{ chat.nao_lidas }}
-        </span>
-        {% endif %}
-      </div>
-    </a>
-    {% endfor %}
+      </a>
+      {% endfor %}
   </div>
 
   <!-- Chat -->
   <div
-    class="w-full md:w-2/3 h-4/5 my-4 md:my-10 md:mr-10 border-2 border-teal-600 rounded-xl flex flex-col bg-white">
-    <a href="/chat" class="flex justify-end font-semibold m-4 text-gray-600 no-underline hover:no-underline">X</a>
-    <div class="flex items-center justify-center h-full">
-      <div class="text-sm md:text-lg text-gray-500">Clique para abrir uma conversa</div>
-    </div>
+    class="w-full md:w-2/3 h-4/5 my-4 md:my-10 md:mr-10 border-2 border-teal-600 rounded-xl flex flex-col bg-white"
+  >
+      <a href="/chat" class="flex justify-end font-semibold m-4 text-gray-600 no-underline hover:no-underline">X</a>
+      <div class="flex items-center justify-center h-full">
+        <div class="text-sm md:text-lg text-gray-500">Clique para abrir uma conversa</div>
+      </div>
   </div>
 </div>
+
+<script>
+    // Scroll to bottom on load
+    window.onload = function () {
+        const chatBox = document.getElementById('chatBox');
+        if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    const userId = {{ user_id }};
+    const ws = new WebSocket(`ws://${window.location.host}/ws/notifications/${userId}`);
+
+    ws.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === "new_message") {
+            // Update the chat list to show the new message
+            updateChatList();
+        }
+    };
+
+    function updateChatList() {
+        fetch('/api/chats')
+            .then(response => response.json())
+            .then(chats => {
+                const chatListContainer = document.getElementById('conversationList');
+                // Preserve the existing header
+                chatListContainer.innerHTML = `
+                    <p class="my-2 ml-4 font-semibold text-lg md:text-xl">Conversas</p>
+                `;
+                chats.forEach((chat) => {
+                    const isActive = typeof chatId !== 'undefined' && chat.id == chatId ? 'bg-gray-200' : '';
+                    const unreadBadge = chat.nao_lidas > 0 ? `<span class="ml-2 bg-red-500 text-white rounded-full h-5 w-5 md:h-6 md:w-6 flex items-center justify-center text-xs">${chat.nao_lidas}</span>` : '';
+                    const chatElement = `
+                        <a href="/chat/${chat.id}" class="block ${isActive} no-underline hover:no-underline">
+                            <div class="flex items-center p-4 hover:bg-gray-100 ease-in-out duration-200 cursor-pointer">
+                                <img src="/app/static/fotos/${chat.outro_usuario_foto}" alt="${chat.outro_usuario_nome}" class="w-10 h-10 md:w-12 md:h-12 rounded-full mr-4" />
+                                <div class="flex-1">
+                                    <span class="text-gray-700 font-semibold text-sm md:text-base">${chat.outro_usuario_nome}</span>
+                                    <p class="text-gray-500 text-xs md:text-sm truncate">
+                                        ${chat.ultima_mensagem}
+                                    </p>
+                                </div>
+                                ${unreadBadge}
+                            </div>
+                        </a>
+                    `;
+                    chatListContainer.insertAdjacentHTML('beforeend', chatElement);
+                });
+            });
+    }
+
+    // Toggle conversation list visibility on mobile
+    document.getElementById('toggleConversations').addEventListener('click', function() {
+        const conversationList = document.getElementById('conversationList');
+        conversationList.classList.toggle('hidden');
+    });
+
+    // Ensure conversation list is visible when screen size is medium or larger
+    window.addEventListener('resize', function() {
+        const conversationList = document.getElementById('conversationList');
+        if (window.innerWidth >= 768) { // 768px is the md breakpoint in Tailwind CSS
+            conversationList.classList.remove('hidden');
+        }
+    });
+</script>
 {% endblock %}

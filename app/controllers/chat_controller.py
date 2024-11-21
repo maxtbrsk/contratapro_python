@@ -31,5 +31,4 @@ def get_chat(request: Request, chat_id: int):
     print(conversa)
     chats = get_chats_by_user_id(current_user)
     return views.TemplateResponse("chat/one_chat.html", {"request": request, "chats": chats, "conversa": conversa, "user_id": current_user})
-    
-    
+
