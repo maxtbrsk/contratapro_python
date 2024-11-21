@@ -28,7 +28,8 @@ async def get_chat(request: Request, chat_id: int):
     conversa = get_chat_by_id(chat_id, user_id)
     # Marcar mensagens como lidas
     mark_messages_as_read(chat_id, user_id)
-    chats = get_chats_by_user_id(user_id)
+    chat_manager = ChatManager()
+    chats = chat_manager.get_chats(user_id)
     return templates.TemplateResponse("chat/one_chat.html", {"request": request, "conversa": conversa, "chats": chats, "user_id": user_id})
 
 @router.get("/chats")
@@ -42,9 +43,8 @@ def mark_as_read(request:Request, chat_id: int, chat_manager: ChatManager = Depe
     return {"status": "success"}
 
 @router.get("/api/chats")
-async def api_get_chats(request: Request):
+async def api_get_chats(request: Request, chat_manager: ChatManager = Depends()):
     user_id = int(get_current_user_id(request))
-    chats = get_chats_by_user_id(user_id)
-    # Convert chats to a serializable format if necessary
+    chats = chat_manager.get_chats(user_id)  # Use ChatManager to get ordered chats
     chats_list = [dict(chat) for chat in chats]
     return JSONResponse(content=chats_list)

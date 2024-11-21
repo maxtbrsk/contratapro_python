@@ -19,7 +19,7 @@
         
         {% for chat in chats %}
         <a
-            href="/chat/{{ chat.id }}"
+            href="/chat/{{ chat.chat_id }}"
             class="block {% if chat.id == conversa.id %}bg-gray-200{% endif %} no-underline hover:no-underline"
         >
             <div

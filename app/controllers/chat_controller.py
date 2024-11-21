@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 
 from app.controllers.user_controller import get_current_user_id
-from app.models.chat import create_chat, get_chat_by_id, get_chats_by_user_id
+from app.models.chat import ChatManager, create_chat, get_chat_by_id, get_chats_by_user_id
 
 views = Jinja2Templates(directory="app/views")
 
@@ -22,7 +22,8 @@ def create_chat_controller(request: Request, user_id: int):
 
 def get_all_chats(request: Request):
     current_user = get_current_user_id(request)
-    chats = get_chats_by_user_id(current_user)
+    chat_manager = ChatManager()
+    chats = chat_manager.get_chats(current_user)
     return views.TemplateResponse("chat/chat.html", {"request": request, "chats": chats, "user_id": current_user})
 
 def get_chat(request: Request, chat_id: int):
