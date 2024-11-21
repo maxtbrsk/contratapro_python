@@ -133,3 +133,14 @@ class ChatManager:
         """
         self.db.execute(query, {"chat_id": chat_id, "user_id": user_id})
         self.db.commit()
+        
+def get_participants_in_chat(chat_id):
+    db = Database()
+    query = "SELECT cliente_id, prestador_id FROM conversas WHERE id = %s"
+    db.execute(query, (chat_id,))
+    result = db.cursor.fetchone()
+    db.close()
+    if result:
+        return [result['cliente_id'], result['prestador_id']]
+    else:
+        return []

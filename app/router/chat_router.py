@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request, Form, File, UploadFile
 from dotenv import load_dotenv
 from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
 from app.controllers.chat_controller import create_chat_controller, get_all_chats, get_chat
 from app.controllers.user_controller import get_current_user_id
@@ -40,3 +40,11 @@ def mark_as_read(request:Request, chat_id: int, chat_manager: ChatManager = Depe
     user_id = get_current_user_id(request)
     chat_manager.mark_messages_as_read(chat_id, user_id)
     return {"status": "success"}
+
+@router.get("/api/chats")
+async def api_get_chats(request: Request):
+    user_id = int(get_current_user_id(request))
+    chats = get_chats_by_user_id(user_id)
+    # Convert chats to a serializable format if necessary
+    chats_list = [dict(chat) for chat in chats]
+    return JSONResponse(content=chats_list)
